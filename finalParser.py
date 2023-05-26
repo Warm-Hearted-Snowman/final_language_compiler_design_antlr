@@ -274,6 +274,12 @@ class finalParser(Parser):
             if hasattr(listener, "exitProg"):
                 listener.exitProg(self)
 
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitProg"):
+                return visitor.visitProg(self)
+            else:
+                return visitor.visitChildren(self)
+
     def prog(self):
 
         localctx = finalParser.ProgContext(self, self._ctx, self.state)
@@ -322,6 +328,12 @@ class finalParser(Parser):
         def exitRule(self, listener: ParseTreeListener):
             if hasattr(listener, "exitDeclaration"):
                 listener.exitDeclaration(self)
+
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitDeclaration"):
+                return visitor.visitDeclaration(self)
+            else:
+                return visitor.visitChildren(self)
 
     def declaration(self):
 
@@ -388,6 +400,12 @@ class finalParser(Parser):
             if hasattr(listener, "exitVariableDeclaration"):
                 listener.exitVariableDeclaration(self)
 
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitVariableDeclaration"):
+                return visitor.visitVariableDeclaration(self)
+            else:
+                return visitor.visitChildren(self)
+
     def variableDeclaration(self):
 
         localctx = finalParser.VariableDeclarationContext(self, self._ctx, self.state)
@@ -448,6 +466,12 @@ class finalParser(Parser):
             if hasattr(listener, "exitVariableDeclarator"):
                 listener.exitVariableDeclarator(self)
 
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitVariableDeclarator"):
+                return visitor.visitVariableDeclarator(self)
+            else:
+                return visitor.visitChildren(self)
+
     def variableDeclarator(self):
 
         localctx = finalParser.VariableDeclaratorContext(self, self._ctx, self.state)
@@ -501,6 +525,12 @@ class finalParser(Parser):
         def exitRule(self, listener: ParseTreeListener):
             if hasattr(listener, "exitTypeSpecifier"):
                 listener.exitTypeSpecifier(self)
+
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitTypeSpecifier"):
+                return visitor.visitTypeSpecifier(self)
+            else:
+                return visitor.visitChildren(self)
 
     def typeSpecifier(self):
 
@@ -559,6 +589,12 @@ class finalParser(Parser):
         def exitRule(self, listener: ParseTreeListener):
             if hasattr(listener, "exitFunctionDeclaration"):
                 listener.exitFunctionDeclaration(self)
+
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitFunctionDeclaration"):
+                return visitor.visitFunctionDeclaration(self)
+            else:
+                return visitor.visitChildren(self)
 
     def functionDeclaration(self):
 
@@ -622,6 +658,12 @@ class finalParser(Parser):
             if hasattr(listener, "exitParameterList"):
                 listener.exitParameterList(self)
 
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitParameterList"):
+                return visitor.visitParameterList(self)
+            else:
+                return visitor.visitChildren(self)
+
     def parameterList(self):
 
         localctx = finalParser.ParameterListContext(self, self._ctx, self.state)
@@ -675,6 +717,12 @@ class finalParser(Parser):
             if hasattr(listener, "exitParameter"):
                 listener.exitParameter(self)
 
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitParameter"):
+                return visitor.visitParameter(self)
+            else:
+                return visitor.visitChildren(self)
+
     def parameter(self):
 
         localctx = finalParser.ParameterContext(self, self._ctx, self.state)
@@ -722,6 +770,12 @@ class finalParser(Parser):
         def exitRule(self, listener: ParseTreeListener):
             if hasattr(listener, "exitCompoundStatement"):
                 listener.exitCompoundStatement(self)
+
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitCompoundStatement"):
+                return visitor.visitCompoundStatement(self)
+            else:
+                return visitor.visitChildren(self)
 
     def compoundStatement(self):
 
@@ -799,6 +853,12 @@ class finalParser(Parser):
         def exitRule(self, listener: ParseTreeListener):
             if hasattr(listener, "exitStatement"):
                 listener.exitStatement(self)
+
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitStatement"):
+                return visitor.visitStatement(self)
+            else:
+                return visitor.visitChildren(self)
 
     def statement(self):
 
@@ -893,6 +953,12 @@ class finalParser(Parser):
             if hasattr(listener, "exitExpressionStatement"):
                 listener.exitExpressionStatement(self)
 
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitExpressionStatement"):
+                return visitor.visitExpressionStatement(self)
+            else:
+                return visitor.visitChildren(self)
+
     def expressionStatement(self):
 
         localctx = finalParser.ExpressionStatementContext(self, self._ctx, self.state)
@@ -958,6 +1024,12 @@ class finalParser(Parser):
         def exitRule(self, listener: ParseTreeListener):
             if hasattr(listener, "exitIf_soStatement"):
                 listener.exitIf_soStatement(self)
+
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitIf_soStatement"):
+                return visitor.visitIf_soStatement(self)
+            else:
+                return visitor.visitChildren(self)
 
     def if_soStatement(self):
 
@@ -1028,6 +1100,12 @@ class finalParser(Parser):
             if hasattr(listener, "exitUntilStatement"):
                 listener.exitUntilStatement(self)
 
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitUntilStatement"):
+                return visitor.visitUntilStatement(self)
+            else:
+                return visitor.visitChildren(self)
+
     def untilStatement(self):
 
         localctx = finalParser.UntilStatementContext(self, self._ctx, self.state)
@@ -1093,6 +1171,12 @@ class finalParser(Parser):
         def exitRule(self, listener: ParseTreeListener):
             if hasattr(listener, "exitLoopStatement"):
                 listener.exitLoopStatement(self)
+
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitLoopStatement"):
+                return visitor.visitLoopStatement(self)
+            else:
+                return visitor.visitChildren(self)
 
     def loopStatement(self):
 
@@ -1184,6 +1268,12 @@ class finalParser(Parser):
             if hasattr(listener, "exitSelectorStatement"):
                 listener.exitSelectorStatement(self)
 
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitSelectorStatement"):
+                return visitor.visitSelectorStatement(self)
+            else:
+                return visitor.visitChildren(self)
+
     def selectorStatement(self):
 
         localctx = finalParser.SelectorStatementContext(self, self._ctx, self.state)
@@ -1262,6 +1352,12 @@ class finalParser(Parser):
             if hasattr(listener, "exitSelectStatement"):
                 listener.exitSelectStatement(self)
 
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitSelectStatement"):
+                return visitor.visitSelectStatement(self)
+            else:
+                return visitor.visitChildren(self)
+
     def selectStatement(self):
 
         localctx = finalParser.SelectStatementContext(self, self._ctx, self.state)
@@ -1315,6 +1411,12 @@ class finalParser(Parser):
             if hasattr(listener, "exitOtherStatement"):
                 listener.exitOtherStatement(self)
 
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitOtherStatement"):
+                return visitor.visitOtherStatement(self)
+            else:
+                return visitor.visitChildren(self)
+
     def otherStatement(self):
 
         localctx = finalParser.OtherStatementContext(self, self._ctx, self.state)
@@ -1361,6 +1463,12 @@ class finalParser(Parser):
         def exitRule(self, listener: ParseTreeListener):
             if hasattr(listener, "exitReturnStatement"):
                 listener.exitReturnStatement(self)
+
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitReturnStatement"):
+                return visitor.visitReturnStatement(self)
+            else:
+                return visitor.visitChildren(self)
 
     def returnStatement(self):
 
@@ -1426,6 +1534,12 @@ class finalParser(Parser):
         def exitRule(self, listener: ParseTreeListener):
             if hasattr(listener, "exitReadStatement"):
                 listener.exitReadStatement(self)
+
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitReadStatement"):
+                return visitor.visitReadStatement(self)
+            else:
+                return visitor.visitChildren(self)
 
     def readStatement(self):
 
@@ -1497,6 +1611,12 @@ class finalParser(Parser):
             if hasattr(listener, "exitWriteStatement"):
                 listener.exitWriteStatement(self)
 
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitWriteStatement"):
+                return visitor.visitWriteStatement(self)
+            else:
+                return visitor.visitChildren(self)
+
     def writeStatement(self):
 
         localctx = finalParser.WriteStatementContext(self, self._ctx, self.state)
@@ -1555,6 +1675,12 @@ class finalParser(Parser):
             if hasattr(listener, "exitExpression"):
                 listener.exitExpression(self)
 
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitExpression"):
+                return visitor.visitExpression(self)
+            else:
+                return visitor.visitChildren(self)
+
     def expression(self):
 
         localctx = finalParser.ExpressionContext(self, self._ctx, self.state)
@@ -1603,6 +1729,12 @@ class finalParser(Parser):
         def exitRule(self, listener: ParseTreeListener):
             if hasattr(listener, "exitAssignmentExpression"):
                 listener.exitAssignmentExpression(self)
+
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitAssignmentExpression"):
+                return visitor.visitAssignmentExpression(self)
+            else:
+                return visitor.visitChildren(self)
 
     def assignmentExpression(self):
 
@@ -1663,6 +1795,12 @@ class finalParser(Parser):
             if hasattr(listener, "exitLogicalOrExpression"):
                 listener.exitLogicalOrExpression(self)
 
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitLogicalOrExpression"):
+                return visitor.visitLogicalOrExpression(self)
+            else:
+                return visitor.visitChildren(self)
+
     def logicalOrExpression(self):
 
         localctx = finalParser.LogicalOrExpressionContext(self, self._ctx, self.state)
@@ -1721,6 +1859,12 @@ class finalParser(Parser):
         def exitRule(self, listener: ParseTreeListener):
             if hasattr(listener, "exitLogicalAndExpression"):
                 listener.exitLogicalAndExpression(self)
+
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitLogicalAndExpression"):
+                return visitor.visitLogicalAndExpression(self)
+            else:
+                return visitor.visitChildren(self)
 
     def logicalAndExpression(self):
 
@@ -1786,6 +1930,12 @@ class finalParser(Parser):
         def exitRule(self, listener: ParseTreeListener):
             if hasattr(listener, "exitEqualityExpression"):
                 listener.exitEqualityExpression(self)
+
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitEqualityExpression"):
+                return visitor.visitEqualityExpression(self)
+            else:
+                return visitor.visitChildren(self)
 
     def equalityExpression(self):
 
@@ -1869,6 +2019,12 @@ class finalParser(Parser):
             if hasattr(listener, "exitRelationalExpression"):
                 listener.exitRelationalExpression(self)
 
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitRelationalExpression"):
+                return visitor.visitRelationalExpression(self)
+            else:
+                return visitor.visitChildren(self)
+
     def relationalExpression(self):
 
         localctx = finalParser.RelationalExpressionContext(self, self._ctx, self.state)
@@ -1938,6 +2094,12 @@ class finalParser(Parser):
         def exitRule(self, listener: ParseTreeListener):
             if hasattr(listener, "exitAdditiveExpression"):
                 listener.exitAdditiveExpression(self)
+
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitAdditiveExpression"):
+                return visitor.visitAdditiveExpression(self)
+            else:
+                return visitor.visitChildren(self)
 
     def additiveExpression(self):
 
@@ -2033,6 +2195,12 @@ class finalParser(Parser):
             if hasattr(listener, "exitMultiplicativeExpression"):
                 listener.exitMultiplicativeExpression(self)
 
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitMultiplicativeExpression"):
+                return visitor.visitMultiplicativeExpression(self)
+            else:
+                return visitor.visitChildren(self)
+
     def multiplicativeExpression(self):
 
         localctx = finalParser.MultiplicativeExpressionContext(self, self._ctx, self.state)
@@ -2111,6 +2279,12 @@ class finalParser(Parser):
         def exitRule(self, listener: ParseTreeListener):
             if hasattr(listener, "exitUnaryExpression"):
                 listener.exitUnaryExpression(self)
+
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitUnaryExpression"):
+                return visitor.visitUnaryExpression(self)
+            else:
+                return visitor.visitChildren(self)
 
     def unaryExpression(self):
 
@@ -2205,6 +2379,12 @@ class finalParser(Parser):
         def exitRule(self, listener: ParseTreeListener):
             if hasattr(listener, "exitPrimaryExpression"):
                 listener.exitPrimaryExpression(self)
+
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitPrimaryExpression"):
+                return visitor.visitPrimaryExpression(self)
+            else:
+                return visitor.visitChildren(self)
 
     def primaryExpression(self):
 

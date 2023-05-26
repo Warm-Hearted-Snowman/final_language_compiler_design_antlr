@@ -91,7 +91,6 @@ writeStatement: WRITE LPAREN expression (COMMA expression)* RPAREN SEMICOLON;
 
 expression: assignmentExpression;
 
-//assignmentExpression: logicalOrExpression (ASSIGN assignmentExpression)?;
 assignmentExpression: logicalOrExpression (ASSIGN assignmentExpression)*;
 
 logicalOrExpression: logicalAndExpression (OR logicalAndExpression)*;

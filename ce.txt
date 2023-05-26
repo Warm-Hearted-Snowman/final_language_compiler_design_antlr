@@ -16,7 +16,7 @@ int main(){
     }
     until(start <= number2) {
         fact *= start;
-        start++
+        start++;
     }
     write('this is fact of number2 = int', fact);
     write('Enter 0 or 1');
@@ -24,8 +24,10 @@ int main(){
     selector: input{
         select 0:
             write ('This is ZERO!');
+            break;
         select 1:
             write ('This is ONE!');
+            break;
         other:
             write('NONE');
     }

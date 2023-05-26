@@ -2,6 +2,7 @@ from antlr4 import *
 from finalLexer import finalLexer
 from finalParser import finalParser
 from finalListener import finalListener
+from finalVisitor import finalVisitor
 
 
 class MyListener(finalListener):
@@ -215,21 +216,27 @@ def main():
 
     f_context = f_parser.prog()
 
-    f_visitor = finalListener
-    # Create a listener/visitor
-    # listener = YourExprListener()
+    f_visitor = finalVisitor()
 
-    # Set the listener/visitor on the parser
-    # parser.addParseListener(listener)
+    d = f_visitor.visit(f_context)
+
+    print(d)
+    #
+    # # Create a listener/visitor
+    # listener = MyListener()
+    #
+    # # Set the listener/visitor on the parser
+    # f_parser.addParseListener(listener)
 
     # Start the parsing process at the "prog" rule
+    # tree = f_parser.prog()
     tree = f_parser.prog()
 
     # Perform actions based on the parsed input
     # ... implement your actions in YourExprListener class
 
     # Optionally, print the parse tree for debugging
-    print(tree.toStringTree(ruleNames=f_parser.ruleNames))
+    # print(tree.toStringTree(ruleNames=f_parser.ruleNames))
 
 
 if __name__ == '__main__':
