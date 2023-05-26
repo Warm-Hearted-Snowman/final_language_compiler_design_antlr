@@ -205,28 +205,31 @@ def main():
     # input_stream = InputStream("int fact *= start;")
 
     # Create a lexer
-    lexer = finalLexer(input_stream)
+    f_lexer = finalLexer(input_stream)
 
     # Create a token stream from the lexer
-    token_stream = CommonTokenStream(lexer)
+    token_stream = CommonTokenStream(f_lexer)
 
     # Create a parser
-    parser = finalParser(token_stream)
+    f_parser = finalParser(token_stream)
 
+    f_context = f_parser.prog()
+
+    f_visitor = finalListener
     # Create a listener/visitor
-    listener = YourExprListener()
+    # listener = YourExprListener()
 
     # Set the listener/visitor on the parser
-    parser.addParseListener(listener)
+    # parser.addParseListener(listener)
 
     # Start the parsing process at the "prog" rule
-    tree = parser.prog()
+    tree = f_parser.prog()
 
     # Perform actions based on the parsed input
     # ... implement your actions in YourExprListener class
 
     # Optionally, print the parse tree for debugging
-    print(tree.toStringTree(ruleNames=parser.ruleNames))
+    print(tree.toStringTree(ruleNames=f_parser.ruleNames))
 
 
 if __name__ == '__main__':
