@@ -2,7 +2,7 @@ int main(){
     int number1 = 1, number2, temp, fact = 1, start = 1, input;
     write('Enter number2:', number2);
     read(int, number2);
-    write('This is number2=int', number2);
+    write('This is number2=int', number2, number1);
     if (number1>number2) so {
         temp = number1;
         number1 = number2;

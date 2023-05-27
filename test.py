@@ -199,7 +199,7 @@ class MyListener(finalListener):
 
 def main():
     # Create an input stream from the input source
-    with open('cef.txt', 'r') as f:
+    with open('ce.txt', 'r') as f:
         code = f.read()
 
     input_stream = InputStream(code)

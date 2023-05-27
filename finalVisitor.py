@@ -198,6 +198,10 @@ class finalVisitor(ParseTreeVisitor):
                     print(self.variables[final_state[0]]['value'][0], end=' ')
                 except:
                     print(self.variables[final_state[0]]['value'], end=' ')
+            elif final_state[1] == 'char':
+                print(final_state[0].strip("'"), end=' ')
+            elif final_state[1] == 'string':
+                print(final_state[0].strip('"'), end=' ')
             else:
                 print(final_state[0], end=' ')
         print()
@@ -302,7 +306,7 @@ class finalVisitor(ParseTreeVisitor):
         if ctx.LT():
             left_expression = self.visit(ctx.additiveExpression()[0])
             right_expression = self.visit(ctx.additiveExpression()[1])
-            if left_expression[1] == 'id' and right_expression == 'id':
+            if left_expression[1] == 'id' and right_expression[1] == 'id':
                 if (self.variables[left_expression[0]]['type'] != 'string' and self.variables[
                     left_expression[0]]['type'] != 'char') and (
                         self.variables[right_expression[0]]['type'] != 'string' and self.variables[
@@ -327,7 +331,8 @@ class finalVisitor(ParseTreeVisitor):
         elif ctx.GT():
             left_expression = self.visit(ctx.additiveExpression()[0])
             right_expression = self.visit(ctx.additiveExpression()[1])
-            if left_expression[1] == 'id' and right_expression == 'id':
+            print(left_expression, right_expression)
+            if left_expression[1] == 'id' and right_expression[1] == 'id':
                 if (self.variables[left_expression[0]]['type'] != 'string' and self.variables[
                     left_expression[0]]['type'] != 'char') and (
                         self.variables[right_expression[0]]['type'] != 'string' and self.variables[
@@ -352,7 +357,7 @@ class finalVisitor(ParseTreeVisitor):
         elif ctx.LTE():
             left_expression = self.visit(ctx.additiveExpression()[0])
             right_expression = self.visit(ctx.additiveExpression()[1])
-            if left_expression[1] == 'id' and right_expression == 'id':
+            if left_expression[1] == 'id' and right_expression[1] == 'id':
                 if (self.variables[left_expression[0]]['type'] != 'string' and self.variables[
                     left_expression[0]]['type'] != 'char') and (
                         self.variables[right_expression[0]]['type'] != 'string' and self.variables[
@@ -377,7 +382,7 @@ class finalVisitor(ParseTreeVisitor):
         elif ctx.GTE():
             left_expression = self.visit(ctx.additiveExpression()[0])
             right_expression = self.visit(ctx.additiveExpression()[1])
-            if left_expression[1] == 'id' and right_expression == 'id':
+            if left_expression[1] == 'id' and right_expression[1] == 'id':
                 if (self.variables[left_expression[0]]['type'] != 'string' and self.variables[
                     left_expression[0]]['type'] != 'char') and (
                         self.variables[right_expression[0]]['type'] != 'string' and self.variables[
@@ -409,8 +414,9 @@ class finalVisitor(ParseTreeVisitor):
             for i in range(n - 1):
                 if self.visit(ctx.multiplicativeExpression()[i])[1] == 'id':
                     left_value = self.variables[self.visit(ctx.multiplicativeExpression()[i])[0]]['value'][0]
-                elif self.visit(ctx.multiplicativeExpression()[i])[1] == 'int' or self.visit(ctx.multiplicativeExpression()[i])[
-                    1] == 'float':
+                elif self.visit(ctx.multiplicativeExpression()[i])[1] == 'int' or \
+                        self.visit(ctx.multiplicativeExpression()[i])[
+                            1] == 'float':
                     left_value = self.visit(ctx.multiplicativeExpression()[i])[0]
                 elif self.visit(ctx.multiplicativeExpression()[i])[1] == 'char' or \
                         self.visit(ctx.multiplicativeExpression()[i])[
@@ -457,41 +463,88 @@ class finalVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by finalParser#multiplicativeExpression.
     def visitMultiplicativeExpression(self, ctx: finalParser.MultiplicativeExpressionContext):
+        final_additive_res = 1
         if ctx.MULT():
-            left_expression = self.visit(ctx.unaryExpression()[0])
-            right_expression = self.visit(ctx.unaryExpression()[1])
-            return ("multiplication", left_expression, right_expression)
+            n = len(ctx.unaryExpression())
+            for i in range(n):
+                if self.visit(ctx.unaryExpression()[i])[1] == 'id':
+                    current_value = self.variables[self.visit(ctx.unaryExpression()[i])[0]]['value'][0]
+                elif self.visit(ctx.unaryExpression()[i])[1] == 'int' or \
+                        self.visit(ctx.unaryExpression()[i])[
+                            1] == 'float':
+                    current_value = self.visit(ctx.unaryExpression()[i])[0]
+                elif self.visit(ctx.unaryExpression()[i])[1] == 'char' or \
+                        self.visit(ctx.unaryExpression()[i])[
+                            1] == 'string':
+                    current_value = float(self.visit(ctx.unaryExpression()[i])[0])
+                final_additive_res *= current_value
+            return [final_additive_res, type(final_additive_res).__name__]
         elif ctx.DIV():
-            left_expression = self.visit(ctx.unaryExpression()[0])
-            right_expression = self.visit(ctx.unaryExpression()[1])
-            return ("division", left_expression, right_expression)
+            n = len(ctx.unaryExpression())
+            for i in range(n):
+                if self.visit(ctx.unaryExpression()[i])[1] == 'id':
+                    current_value = self.variables[self.visit(ctx.unaryExpression()[i])[0]]['value'][0]
+                elif self.visit(ctx.unaryExpression()[i])[1] == 'int' or \
+                        self.visit(ctx.unaryExpression()[i])[
+                            1] == 'float':
+                    current_value = self.visit(ctx.unaryExpression()[i])[0]
+                elif self.visit(ctx.unaryExpression()[i])[1] == 'char' or \
+                        self.visit(ctx.unaryExpression()[i])[
+                            1] == 'string':
+                    current_value = float(self.visit(ctx.unaryExpression()[i])[0])
+                final_additive_res /= current_value
+            return [final_additive_res, type(final_additive_res).__name__]
         elif ctx.MOD():
             left_expression = self.visit(ctx.unaryExpression()[0])
             right_expression = self.visit(ctx.unaryExpression()[1])
-            return ("modulus", left_expression, right_expression)
+            if left_expression[1] == 'id':
+                final_additive_res = float(self.variables[left_expression[0]]['value'][0]) % right_expression[0]
+                if int(final_additive_res) == final_additive_res:
+                    return [int(final_additive_res), 'int']
+                else:
+                    return [final_additive_res, type(final_additive_res).__name__]
         elif ctx.MULTASGN():
             left_expression = self.visit(ctx.unaryExpression()[0])
             right_expression = self.visit(ctx.unaryExpression()[1])
-            if self.variables.get(left_expression[0], -1) != -1:
+            if left_expression[1] == 'id':
                 if left_expression[1] == 'id' and right_expression[1] == 'id':
                     self.variables[left_expression[0]]['value'][0] *= self.variables[right_expression[0]]['value'][0]
-                    return
+                    return ("multiplication_assignment", left_expression, right_expression)
                 elif self.variables[left_expression[0]]["type"] == right_expression[1]:
                     self.variables[left_expression[0]]['value'][0] *= right_expression[0]
-                    return
+                    return ("multiplication_assignment", left_expression, right_expression)
                 else:
                     raise Exception('Type Error')
             else:
                 raise Exception(f'No variable with \'{left_expression[0]}\' identified.')
-            return ("multiplication_assignment", left_expression, right_expression)
         elif ctx.ADDASGN():
             left_expression = self.visit(ctx.unaryExpression()[0])
             right_expression = self.visit(ctx.unaryExpression()[1])
-            return ("addition_assignment", left_expression, right_expression)
+            if left_expression[1] == 'id':
+                if left_expression[1] == 'id' and right_expression[1] == 'id':
+                    self.variables[left_expression[0]]['value'][0] += self.variables[right_expression[0]]['value'][0]
+                    return ("additive_assignment", left_expression, right_expression)
+                elif self.variables[left_expression[0]]["type"] == right_expression[1]:
+                    self.variables[left_expression[0]]['value'][0] += right_expression[0]
+                    return ("additive_assignment", left_expression, right_expression)
+                else:
+                    raise Exception('Type Error')
+            else:
+                raise Exception(f'No variable with \'{left_expression[0]}\' identified.')
         elif ctx.SUBASGN():
             left_expression = self.visit(ctx.unaryExpression()[0])
             right_expression = self.visit(ctx.unaryExpression()[1])
-            return ("subtraction_assignment", left_expression, right_expression)
+            if left_expression[1] == 'id':
+                if left_expression[1] == 'id' and right_expression[1] == 'id':
+                    self.variables[left_expression[0]]['value'][0] -= self.variables[right_expression[0]]['value'][0]
+                    return ("subtrac_assignment", left_expression, right_expression)
+                elif self.variables[left_expression[0]]["type"] == right_expression[1]:
+                    self.variables[left_expression[0]]['value'][0] -= right_expression[0]
+                    return ("subtrac_assignment", left_expression, right_expression)
+                else:
+                    raise Exception('Type Error')
+            else:
+                raise Exception(f'No variable with \'{left_expression[0]}\' identified.')
         return self.visit(ctx.unaryExpression()[0])
 
     # Visit a parse tree produced by finalParser#unaryExpression.
@@ -503,13 +556,24 @@ class finalVisitor(ParseTreeVisitor):
             return ("negation", expression)
         elif ctx.NOT():
             expression = self.visit(ctx.unaryExpression())
-            return ("logical_not", expression)
+            if isinstance(expression, bool):
+                expression = not expression
+                return (expression)
+            else:
+                if expression[1] == 'id':
+                    expression = not self.variables[expression[0]]['value']
+                    return (expression)
+                else:
+                    expression = not expression[0]
+                    return (expression)
+
         elif ctx.INC():
             expression = self.visit(ctx.primaryExpression())
             self.variables[expression[0]]['value'][0] += 1
             return ("increment", expression)
         elif ctx.DEC():
             expression = self.visit(ctx.primaryExpression())
+            self.variables[expression[0]]['value'][0] -= 1
             return ("decrement", expression)
         return self.visit(ctx.primaryExpression())
 
