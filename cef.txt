@@ -1,4 +1,6 @@
 int main(){
-int a=30;
-read(a);
+    int number1 = -51, number2=20, temp, fact = 1, start = 1, input;
+    if (number1<0) so {
+        number1 = -number1;
+    }
 }

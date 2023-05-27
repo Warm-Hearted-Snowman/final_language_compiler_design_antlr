@@ -75,7 +75,7 @@ if_soStatement: IF LPAREN expression RPAREN SO statement (ELSE statement)?;
 
 untilStatement: UNTIL LPAREN expression RPAREN statement;
 
-loopStatement: LOOP LPAREN expression? FORAND expression? FORAND expression? RPAREN statement;
+loopStatement: LOOP LPAREN expression? FORAND expression? FORAND expression? RPAREN compoundStatement;
 
 selectorStatement: SELECTOR COLON expression LBRACE selectStatement* otherStatement? RBRACE;
 

@@ -74,7 +74,7 @@ def serializedATN():
         0,153,152,1,0,0,0,153,154,1,0,0,0,154,155,1,0,0,0,155,157,5,30,0,
         0,156,158,3,40,20,0,157,156,1,0,0,0,157,158,1,0,0,0,158,159,1,0,
         0,0,159,161,5,30,0,0,160,162,3,40,20,0,161,160,1,0,0,0,161,162,1,
-        0,0,0,162,163,1,0,0,0,163,164,5,23,0,0,164,165,3,18,9,0,165,27,1,
+        0,0,0,162,163,1,0,0,0,163,164,5,23,0,0,164,165,3,16,8,0,165,27,1,
         0,0,0,166,167,5,41,0,0,167,168,5,44,0,0,168,169,3,40,20,0,169,173,
         5,24,0,0,170,172,3,30,15,0,171,170,1,0,0,0,172,175,1,0,0,0,173,171,
         1,0,0,0,173,174,1,0,0,0,174,177,1,0,0,0,175,173,1,0,0,0,176,178,
@@ -1234,8 +1234,8 @@ class finalParser ( Parser ):
         def RPAREN(self):
             return self.getToken(finalParser.RPAREN, 0)
 
-        def statement(self):
-            return self.getTypedRuleContext(finalParser.StatementContext,0)
+        def compoundStatement(self):
+            return self.getTypedRuleContext(finalParser.CompoundStatementContext,0)
 
 
         def expression(self, i:int=None):
@@ -1307,7 +1307,7 @@ class finalParser ( Parser ):
             self.state = 163
             self.match(finalParser.RPAREN)
             self.state = 164
-            self.statement()
+            self.compoundStatement()
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
