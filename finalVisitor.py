@@ -1,6 +1,7 @@
 # Generated from final.g4 by ANTLR 4.9.2
 from antlr4 import *
 
+import finalFunctions
 from finalParser import finalParser
 
 
@@ -8,11 +9,15 @@ from finalParser import finalParser
 
 class finalVisitor(ParseTreeVisitor):
 
+    def __init__(self):
+        self.variables = {}
+
     # Visit a parse tree produced by finalParser#prog.
     def visitProg(self, ctx: finalParser.ProgContext):
         result = []
         for declaration in ctx.declaration():
             result.append(self.visit(declaration))
+        print(self.variables)
         return (result)
 
     # Visit a parse tree produced by finalParser#declaration.
@@ -25,6 +30,8 @@ class finalVisitor(ParseTreeVisitor):
         variable_declarators = []
         for variable_declarator in ctx.variableDeclarator():
             variable_declarators.append(self.visitVariableDeclarator(variable_declarator))
+        for variable, value in variable_declarators:
+            self.variables[variable] = {"type": type_specifier, "value": value}
         return (type_specifier, variable_declarators)
 
     # Visit a parse tree produced by finalParser#variableDeclarator.
@@ -148,6 +155,8 @@ class finalVisitor(ParseTreeVisitor):
         expressions = []
         for expression in ctx.expression():
             expressions.append(self.visit(expression))
+        function = getattr(finalFunctions, 'write')
+        function(*expressions)
         return ("write", expressions)
 
     # Visit a parse tree produced by finalParser#expression.
@@ -159,7 +168,14 @@ class finalVisitor(ParseTreeVisitor):
         if ctx.ASSIGN():
             left_expression = self.visit(ctx.logicalOrExpression())
             right_expression = self.visit(ctx.assignmentExpression()[0])
-            return ("assignment", left_expression, right_expression)
+            if self.variables.get(left_expression[0], -1) != -1:
+                if self.variables[left_expression[0]]["type"] == right_expression[1]:
+                    self.variables[left_expression[0]]['value'] = right_expression
+                    return ("assignment", left_expression[0], right_expression)
+                else:
+                    raise Exception('Type Error')
+            else:
+                raise Exception(f'No variable with \'{left_expression[0]}\' identified.')
         return self.visit(ctx.logicalOrExpression())
 
     # Visit a parse tree produced by finalParser#logicalOrExpression.
@@ -215,7 +231,8 @@ class finalVisitor(ParseTreeVisitor):
         if ctx.PLUS():
             left_expression = self.visit(ctx.multiplicativeExpression()[0])
             right_expression = self.visit(ctx.multiplicativeExpression()[1])
-            return ("addition", left_expression, right_expression)
+            # return ("addition", left_expression, right_expression)
+            return left_expression + right_expression
         elif ctx.MINUS():
             left_expression = self.visit(ctx.multiplicativeExpression()[0])
             right_expression = self.visit(ctx.multiplicativeExpression()[1])
@@ -239,7 +256,7 @@ class finalVisitor(ParseTreeVisitor):
         elif ctx.MULTASGN():
             left_expression = self.visit(ctx.unaryExpression()[0])
             right_expression = self.visit(ctx.unaryExpression()[1])
-            return ("multiplication_assignment", left_expression,right_expression)
+            return ("multiplication_assignment", left_expression, right_expression)
         elif ctx.ADDASGN():
             left_expression = self.visit(ctx.unaryExpression()[0])
             right_expression = self.visit(ctx.unaryExpression()[1])
@@ -269,15 +286,16 @@ class finalVisitor(ParseTreeVisitor):
     # Visit a parse tree produced by finalParser#primaryExpression.
     def visitPrimaryExpression(self, ctx: finalParser.PrimaryExpressionContext):
         if ctx.INT():
-            return ctx.INT().getText()
+            return (ctx.INT().getText(), 'int')
         elif ctx.FLOAT():
-            return ctx.FLOAT().getText()
+            return (ctx.FLOAT().getText(), 'float')
         elif ctx.CHAR():
-            return ctx.CHAR().getText()
+            return (ctx.CHAR().getText(), 'char')
         elif ctx.STRING():
-            return ctx.STRING().getText()
+            return (ctx.STRING().getText(), 'stirng')
         elif ctx.ID():
-            return ctx.ID().getText()
+            return (ctx.ID().getText(), 'id')
         elif ctx.expression():
             return self.visit(ctx.expression())
         return None
+

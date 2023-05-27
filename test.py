@@ -199,7 +199,7 @@ class MyListener(finalListener):
 
 def main():
     # Create an input stream from the input source
-    with open('ce.txt', 'r') as f:
+    with open('cef.txt', 'r') as f:
         code = f.read()
 
     input_stream = InputStream(code)
@@ -220,7 +220,7 @@ def main():
 
     d = f_visitor.visit(f_context)
 
-    print(d)
+    # print(d)
     #
     # # Create a listener/visitor
     # listener = MyListener()
