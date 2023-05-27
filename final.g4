@@ -109,8 +109,8 @@ unaryExpression: (INC | DEC | PLUS | MINUS | NOT ) unaryExpression | primaryExpr
 
 primaryExpression: INT | FLOAT | CHAR | STRING | ID | LPAREN expression RPAREN;
 
-INT: [0-9] | [0-9]+;
-FLOAT: [0-9]+'.'[0-9]+;
+INT: '-'? [0-9]+;
+FLOAT: '-'? [0-9]+'.'[0-9]+;
 STRING: '"' ~["\r\n]* '"';
 CHAR: '\'' ~['\r\n]* '\'';
-ID: [a-zA-Z_] | [a-zA-Z_][a-zA-Z0-9_]*;
+ID: [a-zA-Z_] [a-zA-Z0-9_]*;

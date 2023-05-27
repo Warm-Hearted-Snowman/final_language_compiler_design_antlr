@@ -17,7 +17,6 @@ class finalVisitor(ParseTreeVisitor):
         result = []
         for declaration in ctx.declaration():
             result.append(self.visit(declaration))
-        print('\n\n' + str(self.variables))
         return (result)
 
     # Visit a parse tree produced by finalParser#declaration.
@@ -126,14 +125,22 @@ class finalVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by finalParser#selectorStatement.
     def visitSelectorStatement(self, ctx: finalParser.SelectorStatementContext):
+        global selector_flag
+        selector_flag = True
         expression = self.visit(ctx.expression())
+        select_value = self.variables[expression[0]]['value'][0]
         select_statements = []
         for select_statement in ctx.selectStatement():
             select_expression = self.visit(select_statement.expression())
-            select_statement_body = self.visit(select_statement.statement())
-            select_statements.append((select_expression, select_statement_body))
+            select_statements.append(select_expression)
+            if self.variables[expression[0]]['type'] != select_expression[1]:
+                raise Exception(f"missmatch between {expression[0]}: {self.variables[expression[0]]['type']} and "
+                                f"select statement{select_expression[0]}{select_expression[1]}")
+            elif select_expression[0] == select_value:
+                select_statement_body = self.visit(select_statement.statement())
+                selector_flag = False
         other_statement = None
-        if ctx.otherStatement():
+        if selector_flag and ctx.otherStatement():
             other_statement = self.visit(ctx.otherStatement().statement())
         return ("selector", expression, select_statements, other_statement)
 
@@ -168,7 +175,8 @@ class finalVisitor(ParseTreeVisitor):
                 new_value = float(input())
                 self.variables[variable_name]['value'] = [new_value, 'float']
             else:
-                raise Exception(f"{variable_name} with {self.variables[variable_name]['type']} not fit with {type_specifier} ")
+                raise Exception(
+                    f"{variable_name} with {self.variables[variable_name]['type']} not fit with {type_specifier} ")
         else:
             raise Exception(f'No variable with \'{variable_name}\' identified.')
 
@@ -201,17 +209,16 @@ class finalVisitor(ParseTreeVisitor):
         if ctx.ASSIGN():
             left_expression = self.visit(ctx.logicalOrExpression())
             right_expression = self.visit(ctx.assignmentExpression()[0])
-            if self.variables.get(left_expression[0], -1) != -1:
-                if left_expression[1]=='id' and right_expression[1]=='id':
-                    self.variables[left_expression[0]]['value'] = self.variables[right_expression[0]]['value']
-                    return
-                elif self.variables[left_expression[0]]["type"] == right_expression[1]:
-                    self.variables[left_expression[0]]['value'] = right_expression
-                    return
-                else:
-                    raise Exception('Type Error')
+            if type(right_expression) == type(tuple()):
+                right_expression = right_expression[1]
+            elif left_expression[1] == 'id' and right_expression[1] == 'id':
+                self.variables[left_expression[0]]['value'] = self.variables[right_expression[0]]['value']
+                return
+            elif self.variables[left_expression[0]]["type"] == right_expression[1]:
+                self.variables[left_expression[0]]['value'] = right_expression
+                return
             else:
-                raise Exception(f'No variable with \'{left_expression[0]}\' identified.')
+                raise Exception('Type Error')
         return self.visit(ctx.logicalOrExpression())
 
     # Visit a parse tree produced by finalParser#logicalOrExpression.
@@ -244,22 +251,32 @@ class finalVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by finalParser#relationalExpression.
     def visitRelationalExpression(self, ctx: finalParser.RelationalExpressionContext):
+        global left_value, right_value
         if ctx.LT():
             left_expression = self.visit(ctx.additiveExpression()[0])
             right_expression = self.visit(ctx.additiveExpression()[1])
-            print(left_expression, right_expression)
-            print(self.variables)
-            if self.variables.get(left_expression[0], -1) != -1 and self.variables.get(right_expression[0], -1) != -1:
+            if left_expression[1] == 'id' and right_expression == 'id':
                 if (self.variables[left_expression[0]]['type'] != 'string' and self.variables[
                     left_expression[0]]['type'] != 'char') and (
                         self.variables[right_expression[0]]['type'] != 'string' and self.variables[
                     right_expression[0]]['type'] != 'char'):
-                    return float(self.variables[left_expression[0]]['value'][0]) < float(
-                        self.variables[right_expression[0]]['value'][0])
+                    left_value = float(self.variables[left_expression[0]]['value'][0])
+                    right_value = float(self.variables[right_expression[0]]['value'][0])
                 else:
                     raise Exception('Type error')
+            elif left_expression[1] == 'id' and (right_expression[1] == 'int' or right_expression[1] == 'float'):
+                if (self.variables[left_expression[0]]['type'] != 'string' and self.variables[
+                    left_expression[0]]['type'] != 'char'):
+                    left_value = float(self.variables[left_expression[0]]['value'][0])
+                    right_value = float(right_expression[0])
+            elif right_expression[1] == 'id' and (left_expression[1] == 'int' or left_expression[1] == 'float'):
+                if (self.variables[right_expression[0]]['type'] != 'string' and self.variables[
+                    right_expression[0]]['type'] != 'char'):
+                    right_value = float(self.variables[right_expression[0]]['value'][0])
+                    left_value = float(left_expression[0])
             else:
                 raise Exception(f'No variable with \'{left_expression[0]}\' or \'{right_expression[0]}\'')
+            return left_value < right_value
         elif ctx.GT():
             left_expression = self.visit(ctx.additiveExpression()[0])
             right_expression = self.visit(ctx.additiveExpression()[1])
@@ -361,6 +378,8 @@ class finalVisitor(ParseTreeVisitor):
     def visitUnaryExpression(self, ctx: finalParser.UnaryExpressionContext):
         if ctx.MINUS():
             expression = self.visit(ctx.unaryExpression())
+            if expression[1] == 'id':
+                self.variables[expression[0]]['value'] = -self.variables[expression[0]]['value'][0]
             return ("negation", expression)
         elif ctx.NOT():
             expression = self.visit(ctx.unaryExpression())
