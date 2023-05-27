@@ -88,11 +88,13 @@ class finalVisitor(ParseTreeVisitor):
     # Visit a parse tree produced by finalParser#if_soStatement.
     def visitIf_soStatement(self, ctx: finalParser.If_soStatementContext):
         condition = self.visit(ctx.expression())
+        so_statement = None
         if condition:
             so_statement = self.visit(ctx.statement(0))
         else_statement = None
         if ctx.statement(1):
             else_statement = self.visit(ctx.statement(1))
+        return ('if_so', condition, so_statement, else_statement)
 
     # Visit a parse tree produced by finalParser#untilStatement.
     def visitUntilStatement(self, ctx: finalParser.UntilStatementContext):
@@ -139,6 +141,7 @@ class finalVisitor(ParseTreeVisitor):
             elif select_expression[0] == select_value:
                 select_statement_body = self.visit(select_statement.statement())
                 selector_flag = False
+                break
         other_statement = None
         if selector_flag and ctx.otherStatement():
             other_statement = self.visit(ctx.otherStatement().statement())
@@ -188,7 +191,7 @@ class finalVisitor(ParseTreeVisitor):
         for expression in ctx.expression():
             final_state = self.visit(expression)
             expressions.append(final_state)
-            if final_state == bool():
+            if isinstance(final_state, bool):
                 print(final_state)
             elif final_state[1] == 'id':
                 try:
@@ -224,29 +227,73 @@ class finalVisitor(ParseTreeVisitor):
     # Visit a parse tree produced by finalParser#logicalOrExpression.
     def visitLogicalOrExpression(self, ctx: finalParser.LogicalOrExpressionContext):
         if ctx.OR():
-            left_expression = self.visit(ctx.logicalAndExpression()[0])
-            right_expression = self.visit(ctx.logicalAndExpression()[1])
-            return ("logical_or", left_expression, right_expression)
+            n = len(ctx.logicalAndExpression())
+            final = self.visit(ctx.logicalAndExpression()[0])
+            for i in range(1, n):
+                final = final or self.visit(ctx.logicalAndExpression()[i])
+            return (final)
         return self.visit(ctx.logicalAndExpression()[0])
 
     # Visit a parse tree produced by finalParser#logicalAndExpression.
     def visitLogicalAndExpression(self, ctx: finalParser.LogicalAndExpressionContext):
         if ctx.AND():
-            left_expression = self.visit(ctx.equalityExpression()[0])
-            right_expression = self.visit(ctx.equalityExpression()[1])
-            return ("logical_and", left_expression, right_expression)
+            n = len(ctx.equalityExpression())
+            final = self.visit(ctx.equalityExpression()[0])
+            for i in range(1, n):
+                final = final and self.visit(ctx.equalityExpression()[i])
+            return (final)
         return self.visit(ctx.equalityExpression()[0])
 
     # Visit a parse tree produced by finalParser#equalityExpression.
     def visitEqualityExpression(self, ctx: finalParser.EqualityExpressionContext):
         if ctx.EQ():
-            left_expression = self.visit(ctx.relationalExpression()[0])
-            right_expression = self.visit(ctx.relationalExpression()[1])
-            return ("equality", left_expression, right_expression)
+            n = len(ctx.relationalExpression())
+            for i in range(n - 1):
+                if self.visit(ctx.relationalExpression()[i])[1] == 'id':
+                    left_value = self.variables[self.visit(ctx.relationalExpression()[i])[0]]['value'][0]
+                elif self.visit(ctx.relationalExpression()[i])[1] == 'int' or self.visit(ctx.relationalExpression()[i])[
+                    1] == 'float':
+                    left_value = self.visit(ctx.relationalExpression()[i])[0]
+                elif self.visit(ctx.relationalExpression()[i])[1] == 'char' or \
+                        self.visit(ctx.relationalExpression()[i])[
+                            1] == 'string':
+                    left_value = float(self.visit(ctx.relationalExpression()[i])[0])
+                if self.visit(ctx.relationalExpression()[i + 1])[1] == 'id':
+                    right_value = self.variables[self.visit(ctx.relationalExpression()[i + 1])[0]]['value'][0]
+                elif self.visit(ctx.relationalExpression()[i + 1])[1] == 'int' or \
+                        self.visit(ctx.relationalExpression()[i + 1])[
+                            1] == 'float':
+                    right_value = self.visit(ctx.relationalExpression()[i + 1])[0]
+                elif self.visit(ctx.relationalExpression()[i + 1])[1] == 'char' or \
+                        self.visit(ctx.relationalExpression()[i + 1])[
+                            1] == 'string':
+                    right_value = self.visit(ctx.relationalExpression()[i + 1])[0]
+                final = right_value == left_value
+            return (final)
         elif ctx.NEQ():
-            left_expression = self.visit(ctx.relationalExpression()[0])
-            right_expression = self.visit(ctx.relationalExpression()[1])
-            return ("inequality", left_expression, right_expression)
+            n = len(ctx.relationalExpression())
+            for i in range(n - 1):
+                if self.visit(ctx.relationalExpression()[i])[1] == 'id':
+                    left_value = self.variables[self.visit(ctx.relationalExpression()[i])[0]]['value'][0]
+                elif self.visit(ctx.relationalExpression()[i])[1] == 'int' or self.visit(ctx.relationalExpression()[i])[
+                    1] == 'float':
+                    left_value = self.visit(ctx.relationalExpression()[i])[0]
+                elif self.visit(ctx.relationalExpression()[i])[1] == 'char' or \
+                        self.visit(ctx.relationalExpression()[i])[
+                            1] == 'string':
+                    left_value = float(self.visit(ctx.relationalExpression()[i])[0])
+                if self.visit(ctx.relationalExpression()[i + 1])[1] == 'id':
+                    right_value = self.variables[self.visit(ctx.relationalExpression()[i + 1])[0]]['value'][0]
+                elif self.visit(ctx.relationalExpression()[i + 1])[1] == 'int' or \
+                        self.visit(ctx.relationalExpression()[i + 1])[
+                            1] == 'float':
+                    right_value = self.visit(ctx.relationalExpression()[i + 1])[0]
+                elif self.visit(ctx.relationalExpression()[i + 1])[1] == 'char' or \
+                        self.visit(ctx.relationalExpression()[i + 1])[
+                            1] == 'string':
+                    right_value = self.visit(ctx.relationalExpression()[i + 1])[0]
+                final = right_value != left_value
+            return (final)
         return self.visit(ctx.relationalExpression()[0])
 
     # Visit a parse tree produced by finalParser#relationalExpression.
@@ -280,59 +327,132 @@ class finalVisitor(ParseTreeVisitor):
         elif ctx.GT():
             left_expression = self.visit(ctx.additiveExpression()[0])
             right_expression = self.visit(ctx.additiveExpression()[1])
-            if self.variables.get(left_expression[0], -1) != -1 and self.variables.get(right_expression[0], -1) != -1:
+            if left_expression[1] == 'id' and right_expression == 'id':
                 if (self.variables[left_expression[0]]['type'] != 'string' and self.variables[
                     left_expression[0]]['type'] != 'char') and (
                         self.variables[right_expression[0]]['type'] != 'string' and self.variables[
                     right_expression[0]]['type'] != 'char'):
-                    return float(self.variables[left_expression[0]]['value'][0]) > float(
-                        self.variables[right_expression[0]]['value'][0])
+                    left_value = float(self.variables[left_expression[0]]['value'][0])
+                    right_value = float(self.variables[right_expression[0]]['value'][0])
                 else:
                     raise Exception('Type error')
+            elif left_expression[1] == 'id' and (right_expression[1] == 'int' or right_expression[1] == 'float'):
+                if (self.variables[left_expression[0]]['type'] != 'string' and self.variables[
+                    left_expression[0]]['type'] != 'char'):
+                    left_value = float(self.variables[left_expression[0]]['value'][0])
+                    right_value = float(right_expression[0])
+            elif right_expression[1] == 'id' and (left_expression[1] == 'int' or left_expression[1] == 'float'):
+                if (self.variables[right_expression[0]]['type'] != 'string' and self.variables[
+                    right_expression[0]]['type'] != 'char'):
+                    right_value = float(self.variables[right_expression[0]]['value'][0])
+                    left_value = float(left_expression[0])
             else:
                 raise Exception(f'No variable with \'{left_expression[0]}\' or \'{right_expression[0]}\'')
+            return left_value > right_value
         elif ctx.LTE():
             left_expression = self.visit(ctx.additiveExpression()[0])
             right_expression = self.visit(ctx.additiveExpression()[1])
-            if self.variables.get(left_expression[0], -1) != -1 and self.variables.get(right_expression[0], -1) != -1:
+            if left_expression[1] == 'id' and right_expression == 'id':
                 if (self.variables[left_expression[0]]['type'] != 'string' and self.variables[
                     left_expression[0]]['type'] != 'char') and (
                         self.variables[right_expression[0]]['type'] != 'string' and self.variables[
                     right_expression[0]]['type'] != 'char'):
-                    return float(self.variables[left_expression[0]]['value'][0]) <= float(
-                        self.variables[right_expression[0]]['value'][0])
+                    left_value = float(self.variables[left_expression[0]]['value'][0])
+                    right_value = float(self.variables[right_expression[0]]['value'][0])
                 else:
                     raise Exception('Type error')
+            elif left_expression[1] == 'id' and (right_expression[1] == 'int' or right_expression[1] == 'float'):
+                if (self.variables[left_expression[0]]['type'] != 'string' and self.variables[
+                    left_expression[0]]['type'] != 'char'):
+                    left_value = float(self.variables[left_expression[0]]['value'][0])
+                    right_value = float(right_expression[0])
+            elif right_expression[1] == 'id' and (left_expression[1] == 'int' or left_expression[1] == 'float'):
+                if (self.variables[right_expression[0]]['type'] != 'string' and self.variables[
+                    right_expression[0]]['type'] != 'char'):
+                    right_value = float(self.variables[right_expression[0]]['value'][0])
+                    left_value = float(left_expression[0])
             else:
                 raise Exception(f'No variable with \'{left_expression[0]}\' or \'{right_expression[0]}\'')
+            return left_value <= right_value
         elif ctx.GTE():
             left_expression = self.visit(ctx.additiveExpression()[0])
             right_expression = self.visit(ctx.additiveExpression()[1])
-            if self.variables.get(left_expression[0], -1) != -1 and self.variables.get(right_expression[0], -1) != -1:
+            if left_expression[1] == 'id' and right_expression == 'id':
                 if (self.variables[left_expression[0]]['type'] != 'string' and self.variables[
                     left_expression[0]]['type'] != 'char') and (
                         self.variables[right_expression[0]]['type'] != 'string' and self.variables[
                     right_expression[0]]['type'] != 'char'):
-                    return float(self.variables[left_expression[0]]['value'][0]) >= float(
-                        self.variables[right_expression[0]]['value'][0])
+                    left_value = float(self.variables[left_expression[0]]['value'][0])
+                    right_value = float(self.variables[right_expression[0]]['value'][0])
                 else:
                     raise Exception('Type error')
+            elif left_expression[1] == 'id' and (right_expression[1] == 'int' or right_expression[1] == 'float'):
+                if (self.variables[left_expression[0]]['type'] != 'string' and self.variables[
+                    left_expression[0]]['type'] != 'char'):
+                    left_value = float(self.variables[left_expression[0]]['value'][0])
+                    right_value = float(right_expression[0])
+            elif right_expression[1] == 'id' and (left_expression[1] == 'int' or left_expression[1] == 'float'):
+                if (self.variables[right_expression[0]]['type'] != 'string' and self.variables[
+                    right_expression[0]]['type'] != 'char'):
+                    right_value = float(self.variables[right_expression[0]]['value'][0])
+                    left_value = float(left_expression[0])
             else:
                 raise Exception(f'No variable with \'{left_expression[0]}\' or \'{right_expression[0]}\'')
+            return left_value >= right_value
         return self.visit(ctx.additiveExpression()[0])
 
     # Visit a parse tree produced by finalParser#additiveExpression.
     def visitAdditiveExpression(self, ctx: finalParser.AdditiveExpressionContext):
+        final_additive_res = 0
         if ctx.PLUS():
-            left_expression = self.visit(ctx.multiplicativeExpression()[0])
-            right_expression = self.visit(ctx.multiplicativeExpression()[1])
-            # return ("addition", left_expression, right_expression)
-            return left_expression + right_expression
+            n = len(ctx.multiplicativeExpression())
+            for i in range(n - 1):
+                if self.visit(ctx.multiplicativeExpression()[i])[1] == 'id':
+                    left_value = self.variables[self.visit(ctx.multiplicativeExpression()[i])[0]]['value'][0]
+                elif self.visit(ctx.multiplicativeExpression()[i])[1] == 'int' or self.visit(ctx.multiplicativeExpression()[i])[
+                    1] == 'float':
+                    left_value = self.visit(ctx.multiplicativeExpression()[i])[0]
+                elif self.visit(ctx.multiplicativeExpression()[i])[1] == 'char' or \
+                        self.visit(ctx.multiplicativeExpression()[i])[
+                            1] == 'string':
+                    left_value = float(self.visit(ctx.multiplicativeExpression()[i])[0])
+                if self.visit(ctx.multiplicativeExpression()[i + 1])[1] == 'id':
+                    right_value = self.variables[self.visit(ctx.multiplicativeExpression()[i + 1])[0]]['value'][0]
+                elif self.visit(ctx.multiplicativeExpression()[i + 1])[1] == 'int' or \
+                        self.visit(ctx.multiplicativeExpression()[i + 1])[
+                            1] == 'float':
+                    right_value = self.visit(ctx.multiplicativeExpression()[i + 1])[0]
+                elif self.visit(ctx.multiplicativeExpression()[i + 1])[1] == 'char' or \
+                        self.visit(ctx.multiplicativeExpression()[i + 1])[
+                            1] == 'string':
+                    right_value = self.visit(ctx.multiplicativeExpression()[i + 1])[0]
+                final_additive_res += right_value + left_value
+            return [final_additive_res, type(final_additive_res).__name__]
         elif ctx.MINUS():
-            left_expression = self.visit(ctx.multiplicativeExpression()[0])
-            right_expression = self.visit(ctx.multiplicativeExpression()[1])
-            print(("subtraction", left_expression, right_expression))
-            return ("subtraction", left_expression, right_expression)
+            n = len(ctx.multiplicativeExpression())
+            for i in range(n - 1):
+                if self.visit(ctx.multiplicativeExpression()[i])[1] == 'id':
+                    left_value = self.variables[self.visit(ctx.multiplicativeExpression()[i])[0]]['value'][0]
+                elif self.visit(ctx.multiplicativeExpression()[i])[1] == 'int' or \
+                        self.visit(ctx.multiplicativeExpression()[i])[
+                            1] == 'float':
+                    left_value = self.visit(ctx.multiplicativeExpression()[i])[0]
+                elif self.visit(ctx.multiplicativeExpression()[i])[1] == 'char' or \
+                        self.visit(ctx.multiplicativeExpression()[i])[
+                            1] == 'string':
+                    left_value = float(self.visit(ctx.multiplicativeExpression()[i])[0])
+                if self.visit(ctx.multiplicativeExpression()[i + 1])[1] == 'id':
+                    right_value = self.variables[self.visit(ctx.multiplicativeExpression()[i + 1])[0]]['value'][0]
+                elif self.visit(ctx.multiplicativeExpression()[i + 1])[1] == 'int' or \
+                        self.visit(ctx.multiplicativeExpression()[i + 1])[
+                            1] == 'float':
+                    right_value = self.visit(ctx.multiplicativeExpression()[i + 1])[0]
+                elif self.visit(ctx.multiplicativeExpression()[i + 1])[1] == 'char' or \
+                        self.visit(ctx.multiplicativeExpression()[i + 1])[
+                            1] == 'string':
+                    right_value = self.visit(ctx.multiplicativeExpression()[i + 1])[0]
+                final_additive_res -= right_value - left_value
+            return [final_additive_res, type(final_additive_res).__name__]
         return self.visit(ctx.multiplicativeExpression()[0])
 
     # Visit a parse tree produced by finalParser#multiplicativeExpression.
