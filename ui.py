@@ -8,6 +8,7 @@ class JupyterLabTextEditor(QMainWindow):
         super().__init__()
 
         self.main_layout = None
+        self.variables = {}
         self.initUI()
 
     def initUI(self):
@@ -71,8 +72,9 @@ class JupyterLabTextEditor(QMainWindow):
         # Process the data
         processed_data = self.processData(text)
 
+        result = "".join(processed_data)
         # Create a new result editor for the processed data
-        self.createResultEditor(processed_data)
+        self.createResultEditor(result)
 
         # Create a new input block
         self.input_editor.clear()
@@ -92,8 +94,9 @@ class JupyterLabTextEditor(QMainWindow):
         self.blocks_layout.addWidget(self.input_editor)
 
     def processData(self, text):
-        variables = run_code(text)
-        return text.upper()
+        run = run_code(text, self.variables)
+        self.variables = run[1]
+        return run[0]
 
 
 if __name__ == '__main__':
