@@ -7,7 +7,7 @@ class JupyterLabTextEditor(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.blocks_layout = None
+        self.main_layout = None
         self.initUI()
 
     def initUI(self):
@@ -16,29 +16,38 @@ class JupyterLabTextEditor(QMainWindow):
         self.setCentralWidget(central_widget)
 
         # Create the main layout for the central widget
-        self.blocks_layout = QVBoxLayout(central_widget)
+        self.main_layout = QVBoxLayout(central_widget)
 
         # Create a scroll area to contain the text editors
         scroll_area = QScrollArea(self)
-        self.blocks_layout.addWidget(scroll_area)
+        self.main_layout.addWidget(scroll_area)
 
-        # Create a widget to hold the text editors vertically
-        text_editors_widget = QWidget(self)
-        text_editors_layout = QVBoxLayout(text_editors_widget)
-        text_editors_widget.setLayout(text_editors_layout)
+        # Create a widget to hold the blocks vertically
+        self.blocks_container = QWidget(self)
+        self.blocks_layout = QVBoxLayout(self.blocks_container)
+        self.blocks_container.setLayout(self.blocks_layout)
 
         # Set the widget as the content of the scroll area
         scroll_area.setWidgetResizable(True)
-        scroll_area.setWidget(text_editors_widget)
+        scroll_area.setWidget(self.blocks_container)
 
         # Create the input text editor widget
         self.input_editor = QPlainTextEdit(self)
-        text_editors_layout.addWidget(self.input_editor)
+        self.blocks_layout.addWidget(self.input_editor)
 
         # Create the Send Data button
         send_button = QPushButton('Send Data', self)
         send_button.clicked.connect(self.sendData)
-        text_editors_layout.addWidget(send_button)
+        send_button.setFixedWidth(100)
+
+        # Create a container widget for the Send Data button
+        button_widget = QWidget(self)
+        button_layout = QVBoxLayout(button_widget)
+        button_layout.addWidget(send_button)
+        button_layout.setAlignment(Qt.AlignTop | Qt.AlignRight)
+
+        # Add the button container widget to the main layout
+        self.main_layout.addWidget(button_widget)
 
         # Set the main window properties
         self.setGeometry(100, 100, 800, 600)
@@ -73,8 +82,7 @@ class JupyterLabTextEditor(QMainWindow):
         self.result_editor.setReadOnly(True)
 
         # Add the result editor below the input editor
-        layout = self.centralWidget().layout()
-        layout.insertWidget(layout.count() - 1, self.result_editor)
+        self.blocks_layout.addWidget(self.result_editor)
 
     def processData(self, text):
         # Add your own processing logic here
