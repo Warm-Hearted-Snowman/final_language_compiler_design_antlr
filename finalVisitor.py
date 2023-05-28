@@ -313,6 +313,7 @@ class finalVisitor(ParseTreeVisitor):
                     right_expression[0]]['type'] != 'char'):
                     left_value = float(self.variables[left_expression[0]]['value'][0])
                     right_value = float(self.variables[right_expression[0]]['value'][0])
+                    return left_value < right_value
                 else:
                     raise Exception('Type error')
             elif left_expression[1] == 'id' and (right_expression[1] == 'int' or right_expression[1] == 'float'):
@@ -320,18 +321,22 @@ class finalVisitor(ParseTreeVisitor):
                     left_expression[0]]['type'] != 'char'):
                     left_value = float(self.variables[left_expression[0]]['value'][0])
                     right_value = float(right_expression[0])
+                    return left_value < right_value
             elif right_expression[1] == 'id' and (left_expression[1] == 'int' or left_expression[1] == 'float'):
                 if (self.variables[right_expression[0]]['type'] != 'string' and self.variables[
                     right_expression[0]]['type'] != 'char'):
                     right_value = float(self.variables[right_expression[0]]['value'][0])
                     left_value = float(left_expression[0])
+                    return left_value < right_value
+            elif (left_expression[1] == 'int' or left_expression[1] == 'float') and (right_expression[1] == 'int' or right_expression[1] == 'float'):
+                right_value = float(right_expression[0])
+                left_value = float(left_expression[0])
+                return left_value < right_value
             else:
                 raise Exception(f'No variable with \'{left_expression[0]}\' or \'{right_expression[0]}\'')
-            return left_value < right_value
         elif ctx.GT():
             left_expression = self.visit(ctx.additiveExpression()[0])
             right_expression = self.visit(ctx.additiveExpression()[1])
-            print(left_expression, right_expression)
             if left_expression[1] == 'id' and right_expression[1] == 'id':
                 if (self.variables[left_expression[0]]['type'] != 'string' and self.variables[
                     left_expression[0]]['type'] != 'char') and (
@@ -339,6 +344,7 @@ class finalVisitor(ParseTreeVisitor):
                     right_expression[0]]['type'] != 'char'):
                     left_value = float(self.variables[left_expression[0]]['value'][0])
                     right_value = float(self.variables[right_expression[0]]['value'][0])
+                    return left_value > right_value
                 else:
                     raise Exception('Type error')
             elif left_expression[1] == 'id' and (right_expression[1] == 'int' or right_expression[1] == 'float'):
@@ -346,14 +352,20 @@ class finalVisitor(ParseTreeVisitor):
                     left_expression[0]]['type'] != 'char'):
                     left_value = float(self.variables[left_expression[0]]['value'][0])
                     right_value = float(right_expression[0])
+                    return left_value > right_value
             elif right_expression[1] == 'id' and (left_expression[1] == 'int' or left_expression[1] == 'float'):
                 if (self.variables[right_expression[0]]['type'] != 'string' and self.variables[
                     right_expression[0]]['type'] != 'char'):
                     right_value = float(self.variables[right_expression[0]]['value'][0])
                     left_value = float(left_expression[0])
+                    return left_value > right_value
+            elif (left_expression[1] == 'int' or left_expression[1] == 'float') and (
+                    right_expression[1] == 'int' or right_expression[1] == 'float'):
+                right_value = float(right_expression[0])
+                left_value = float(left_expression[0])
+                return left_value > right_value
             else:
                 raise Exception(f'No variable with \'{left_expression[0]}\' or \'{right_expression[0]}\'')
-            return left_value > right_value
         elif ctx.LTE():
             left_expression = self.visit(ctx.additiveExpression()[0])
             right_expression = self.visit(ctx.additiveExpression()[1])
@@ -364,6 +376,8 @@ class finalVisitor(ParseTreeVisitor):
                     right_expression[0]]['type'] != 'char'):
                     left_value = float(self.variables[left_expression[0]]['value'][0])
                     right_value = float(self.variables[right_expression[0]]['value'][0])
+                    return left_value <= right_value
+
                 else:
                     raise Exception('Type error')
             elif left_expression[1] == 'id' and (right_expression[1] == 'int' or right_expression[1] == 'float'):
@@ -371,14 +385,22 @@ class finalVisitor(ParseTreeVisitor):
                     left_expression[0]]['type'] != 'char'):
                     left_value = float(self.variables[left_expression[0]]['value'][0])
                     right_value = float(right_expression[0])
+                    return left_value <= right_value
+
             elif right_expression[1] == 'id' and (left_expression[1] == 'int' or left_expression[1] == 'float'):
                 if (self.variables[right_expression[0]]['type'] != 'string' and self.variables[
                     right_expression[0]]['type'] != 'char'):
                     right_value = float(self.variables[right_expression[0]]['value'][0])
                     left_value = float(left_expression[0])
+                    return left_value <= right_value
+            elif (left_expression[1] == 'int' or left_expression[1] == 'float') and (
+                    right_expression[1] == 'int' or right_expression[1] == 'float'):
+                right_value = float(right_expression[0])
+                left_value = float(left_expression[0])
+                return left_value <= right_value
+
             else:
                 raise Exception(f'No variable with \'{left_expression[0]}\' or \'{right_expression[0]}\'')
-            return left_value <= right_value
         elif ctx.GTE():
             left_expression = self.visit(ctx.additiveExpression()[0])
             right_expression = self.visit(ctx.additiveExpression()[1])
@@ -389,6 +411,8 @@ class finalVisitor(ParseTreeVisitor):
                     right_expression[0]]['type'] != 'char'):
                     left_value = float(self.variables[left_expression[0]]['value'][0])
                     right_value = float(self.variables[right_expression[0]]['value'][0])
+                    return left_value >= right_value
+
                 else:
                     raise Exception('Type error')
             elif left_expression[1] == 'id' and (right_expression[1] == 'int' or right_expression[1] == 'float'):
@@ -396,14 +420,20 @@ class finalVisitor(ParseTreeVisitor):
                     left_expression[0]]['type'] != 'char'):
                     left_value = float(self.variables[left_expression[0]]['value'][0])
                     right_value = float(right_expression[0])
+                    return left_value >= right_value
+
             elif right_expression[1] == 'id' and (left_expression[1] == 'int' or left_expression[1] == 'float'):
                 if (self.variables[right_expression[0]]['type'] != 'string' and self.variables[
                     right_expression[0]]['type'] != 'char'):
                     right_value = float(self.variables[right_expression[0]]['value'][0])
                     left_value = float(left_expression[0])
+                    return left_value >= right_value
+            elif (left_expression[1] == 'int' or left_expression[1] == 'float') and (right_expression[1] == 'int' or right_expression[1] == 'float'):
+                right_value = float(right_expression[0])
+                left_value = float(left_expression[0])
+                return left_value >= right_value
             else:
                 raise Exception(f'No variable with \'{left_expression[0]}\' or \'{right_expression[0]}\'')
-            return left_value >= right_value
         return self.visit(ctx.additiveExpression()[0])
 
     # Visit a parse tree produced by finalParser#additiveExpression.
@@ -498,6 +528,7 @@ class finalVisitor(ParseTreeVisitor):
             left_expression = self.visit(ctx.unaryExpression()[0])
             right_expression = self.visit(ctx.unaryExpression()[1])
             if left_expression[1] == 'id':
+                print(1)
                 final_additive_res = float(self.variables[left_expression[0]]['value'][0]) % right_expression[0]
                 if int(final_additive_res) == final_additive_res:
                     return [int(final_additive_res), 'int']

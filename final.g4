@@ -11,6 +11,7 @@ ASSIGN: '=';
 MULTASGN: '*=';
 ADDASGN: '+=';
 SUBASGN: '-=';
+DIVASGN: '/=';
 EQ: '==';
 NEQ: '!=';
 LT: '<';
@@ -103,7 +104,7 @@ relationalExpression: additiveExpression ((LT | GT | LTE | GTE) additiveExpressi
 
 additiveExpression: multiplicativeExpression ((PLUS | MINUS) multiplicativeExpression)*;
 
-multiplicativeExpression: unaryExpression ((MULT | DIV | MOD | MULTASGN | ADDASGN | SUBASGN) unaryExpression)*;
+multiplicativeExpression: unaryExpression ((MULT | DIV | MOD | MULTASGN | DIVASGN | ADDASGN | SUBASGN) unaryExpression)*;
 
 unaryExpression: (INC | DEC | PLUS | MINUS | NOT ) unaryExpression | primaryExpression (INC | DEC)*;
 
