@@ -196,7 +196,7 @@ class MyListener(finalListener):
             self.visitExpression(ctx.expression())
             # Process expression within parentheses
 
-
+# TODO code in like a IDLE in python to run block by block or line by line
 def main():
     # Create an input stream from the input source
     with open('cef.txt', 'r') as f:

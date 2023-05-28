@@ -20,3 +20,6 @@ int main() {
             write('not correct');
     }
 }
+int test(){
+write('this is test');
+}
