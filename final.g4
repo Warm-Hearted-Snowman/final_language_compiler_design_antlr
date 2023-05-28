@@ -80,7 +80,7 @@ loopStatement: LOOP LPAREN expression? FORAND expression? FORAND expression? RPA
 
 selectorStatement: SELECTOR COLON expression LBRACE selectStatement* otherStatement? RBRACE;
 
-selectStatement: SELECT expression COLON statement BREAK SEMICOLON;
+selectStatement: SELECT expression COLON statement;
 
 otherStatement: OTHER COLON statement;
 

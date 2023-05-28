@@ -328,7 +328,8 @@ class finalVisitor(ParseTreeVisitor):
                     right_value = float(self.variables[right_expression[0]]['value'][0])
                     left_value = float(left_expression[0])
                     return left_value < right_value
-            elif (left_expression[1] == 'int' or left_expression[1] == 'float') and (right_expression[1] == 'int' or right_expression[1] == 'float'):
+            elif (left_expression[1] == 'int' or left_expression[1] == 'float') and (
+                    right_expression[1] == 'int' or right_expression[1] == 'float'):
                 right_value = float(right_expression[0])
                 left_value = float(left_expression[0])
                 return left_value < right_value
@@ -428,7 +429,8 @@ class finalVisitor(ParseTreeVisitor):
                     right_value = float(self.variables[right_expression[0]]['value'][0])
                     left_value = float(left_expression[0])
                     return left_value >= right_value
-            elif (left_expression[1] == 'int' or left_expression[1] == 'float') and (right_expression[1] == 'int' or right_expression[1] == 'float'):
+            elif (left_expression[1] == 'int' or left_expression[1] == 'float') and (
+                    right_expression[1] == 'int' or right_expression[1] == 'float'):
                 right_value = float(right_expression[0])
                 left_value = float(left_expression[0])
                 return left_value >= right_value
@@ -543,6 +545,24 @@ class finalVisitor(ParseTreeVisitor):
                     return ("multiplication_assignment", left_expression, right_expression)
                 elif self.variables[left_expression[0]]["type"] == right_expression[1]:
                     self.variables[left_expression[0]]['value'][0] *= right_expression[0]
+                    return ("multiplication_assignment", left_expression, right_expression)
+                else:
+                    raise Exception('Type Error')
+            else:
+                raise Exception(f'No variable with \'{left_expression[0]}\' identified.')
+        elif ctx.DIVASGN():
+            left_expression = self.visit(ctx.unaryExpression()[0])
+            right_expression = self.visit(ctx.unaryExpression()[1])
+            if left_expression[1] == 'id':
+                if left_expression[1] == 'id' and right_expression[1] == 'id':
+                    self.variables[left_expression[0]]['value'][0] = round(
+                        self.variables[left_expression[0]]['value'][0] /
+                        self.variables[right_expression[0]]['value'][0])
+                    return ("multiplication_assignment", left_expression, right_expression)
+                elif self.variables[left_expression[0]]["type"] == right_expression[1]:
+                    self.variables[left_expression[0]]['value'][0] = round(
+                        self.variables[left_expression[0]]['value'][0] / \
+                        right_expression[0])
                     return ("multiplication_assignment", left_expression, right_expression)
                 else:
                     raise Exception('Type Error')

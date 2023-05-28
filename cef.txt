@@ -1,10 +1,22 @@
 int main() {
-    int a=9;
+    int a=9,i;
     int b = a*8;
     if (a<b) so {
     write(a);
     }
     loop(b&b>0&b/=2){
-    write('this is B: ', b)
+    write('this is B: ', b);
+    }
+    write('enter i value:');
+    read(int, i);
+    selector: i{
+        select 0:
+            write(0);
+        select 1:
+            write(1);
+        select 2:
+            write(2);
+        other:
+            write('not correct');
     }
 }
