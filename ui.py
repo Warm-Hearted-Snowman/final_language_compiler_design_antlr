@@ -1,9 +1,9 @@
 import sys
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QPlainTextEdit, QPushButton, QWidget, QScrollArea
+from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QPlainTextEdit, QPushButton, QWidget, QScrollArea, QSizePolicy
 from interpreter import run_code
 
-class JupyterLabTextEditor(QMainWindow):
+class FinalLanguageTextEditor(QMainWindow):
     def __init__(self):
         super().__init__()
 
@@ -72,19 +72,28 @@ class JupyterLabTextEditor(QMainWindow):
         # Process the data
         processed_data = self.processData(text)
 
-        result = "".join(processed_data)
+        if isinstance(processed_data, list):
+            result = "".join(processed_data)
+        else:
+            result = "Error: "+str(processed_data)
         # Create a new result editor for the processed data
         self.createResultEditor(result)
 
         # Create a new input block
         self.input_editor.clear()
         self.input_editor.setFocus()
-
     def createResultEditor(self, text):
         # Create the result editor widget
         self.result_editor = QPlainTextEdit(self)
         self.result_editor.setPlainText(text)
         self.result_editor.setReadOnly(True)
+
+        text_height = round(self.result_editor.document().size().width() / 1822)
+        if text_height == 0 and text != '':
+            text_height = 1
+            self.result_editor.setFixedHeight((100*int(text_height)))
+        else:
+            self.result_editor.setFixedHeight(50)
 
         # Add the result editor below the input editor
         self.blocks_layout.addWidget(self.result_editor)
@@ -93,14 +102,18 @@ class JupyterLabTextEditor(QMainWindow):
         self.input_editor = QPlainTextEdit()
         self.blocks_layout.addWidget(self.input_editor)
 
+
     def processData(self, text):
-        run = run_code(text, self.variables)
-        self.variables = run[1]
-        return run[0]
+        try:
+            run = run_code(text, self.variables)
+            self.variables = run[1]
+            return run[0]
+        except Exception as e:
+            return e
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    window = JupyterLabTextEditor()
+    window = FinalLanguageTextEditor()
     window.show()
     sys.exit(app.exec_())
