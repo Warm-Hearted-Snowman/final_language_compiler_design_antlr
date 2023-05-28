@@ -1,15 +1,15 @@
 from antlr4 import *
 from finalLexer import finalLexer
 from finalParser import finalParser
-from finalVisitor import finalVisitor
+from finalVisitor_interpreter_edition import finalVisitor
 
 
 # TODO code in like a IDLE in python to run block by block or line by line
-def main():
-    # Create an input stream from the input source
-    with open('cef.txt', 'r') as f:
-        code = f.read()
-
+def run_code(code, variables=None):
+    if variables is None:
+        variables = {}
+    code = "int main(){ %s }" % code
+    print(code)
     input_stream = InputStream(code)
     # input_stream = InputStream("int fact *= start;")
 
@@ -26,8 +26,17 @@ def main():
 
     f_visitor = finalVisitor()
 
+    print(f_visitor.variables)
+
+    f_visitor.variables = variables
+
+    print(f_visitor.variables)
+
+
     f_visitor.visit(f_context)
 
+    return [f_visitor.result, f_visitor.variables]
 
-if __name__ == '__main__':
-    main()
+
+for i in run_code('int a=10;write(a);read(int,a);write(a);')[0]:
+    print(i, end='')

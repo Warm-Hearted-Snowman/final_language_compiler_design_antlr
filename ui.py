@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QPlainTextEdit, QPushButton, QWidget, QScrollArea
-
+from interpreter import run_code
 
 class JupyterLabTextEditor(QMainWindow):
     def __init__(self):
@@ -34,6 +34,7 @@ class JupyterLabTextEditor(QMainWindow):
         # Create the input text editor widget
         self.input_editor = QPlainTextEdit(self)
         self.blocks_layout.addWidget(self.input_editor)
+        self.input_editor.setFocus()
 
         # Create the Send Data button
         send_button = QPushButton('Send Data', self)
@@ -57,14 +58,16 @@ class JupyterLabTextEditor(QMainWindow):
         self.result_editor = None
 
     def keyPressEvent(self, event):
-        # Handle key press event for Alt+Enter
-        if event.key() == Qt.Key_Enter and event.modifiers() == Qt.AltModifier:
+        # Handle key press event for Enter key
+        if event.key() == Qt.Key_Enter or event.key() == Qt.Key_Return:
             self.sendData()
 
     def sendData(self):
         # Retrieve the text from the input editor
         text = self.input_editor.toPlainText()
 
+        if text.strip() == '':
+            return
         # Process the data
         processed_data = self.processData(text)
 
@@ -72,8 +75,8 @@ class JupyterLabTextEditor(QMainWindow):
         self.createResultEditor(processed_data)
 
         # Create a new input block
-        self.input_block = QPlainTextEdit()
-        self.blocks_layout.addWidget(self.input_block)
+        self.input_editor.clear()
+        self.input_editor.setFocus()
 
     def createResultEditor(self, text):
         # Create the result editor widget
@@ -84,9 +87,12 @@ class JupyterLabTextEditor(QMainWindow):
         # Add the result editor below the input editor
         self.blocks_layout.addWidget(self.result_editor)
 
+        # Create a new input block
+        self.input_editor = QPlainTextEdit()
+        self.blocks_layout.addWidget(self.input_editor)
+
     def processData(self, text):
-        # Add your own processing logic here
-        # This is just a placeholder
+        variables = run_code(text)
         return text.upper()
 
 
