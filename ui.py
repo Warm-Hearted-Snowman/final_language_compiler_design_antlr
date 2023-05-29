@@ -1,5 +1,6 @@
 import sys
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QPlainTextEdit, QPushButton, QWidget, QScrollArea, QSizePolicy
 from interpreter import run_code
 
@@ -9,6 +10,8 @@ class FinalLanguageTextEditor(QMainWindow):
 
         self.main_layout = None
         self.variables = {}
+        self.input_block_counter = 1
+        self.result_block_counter = 1
         self.initUI()
 
     def initUI(self):
@@ -82,24 +85,25 @@ class FinalLanguageTextEditor(QMainWindow):
         # Create a new input block
         self.input_editor.clear()
         self.input_editor.setFocus()
+
     def createResultEditor(self, text):
         # Create the result editor widget
+        result_block_number = str(self.result_block_counter)
+        self.result_block_counter += 1
+
         self.result_editor = QPlainTextEdit(self)
-        self.result_editor.setPlainText(text)
+        self.result_editor.setPlainText(result_block_number)
         self.result_editor.setReadOnly(True)
-
-        text_height = round(self.result_editor.document().size().width() / 1822)
-        if text_height == 0 and text != '':
-            text_height = 1
-            self.result_editor.setFixedHeight((100*int(text_height)))
-        else:
-            self.result_editor.setFixedHeight(50)
-
-        # Add the result editor below the input editor
+        self.result_editor.setStyleSheet("color: red; font-weight: bold;")
         self.blocks_layout.addWidget(self.result_editor)
 
         # Create a new input block
-        self.input_editor = QPlainTextEdit()
+        input_block_number = str(self.input_block_counter)
+        self.input_block_counter += 1
+
+        self.input_editor = QPlainTextEdit(self)
+        self.input_editor.setStyleSheet("color: green; font-weight: bold;")
+        self.input_editor.setPlainText(input_block_number)
         self.blocks_layout.addWidget(self.input_editor)
 
 
