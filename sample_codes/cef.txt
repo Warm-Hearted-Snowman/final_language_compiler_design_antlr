@@ -1,4 +1,5 @@
 int main() {
+    write(100- 4);
     int a=9,i;
     int b = a*8;
     if (a<b) so {

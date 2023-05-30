@@ -1,0 +1,13 @@
+int main(){
+    int number1 = -10, number2=20;
+    loop (number1 & number1 <= number2 & number1++){
+        write('This is number1 = int', number1);
+    }
+    if (number1<0) so {
+        number1 = -number1;
+    }
+    until(start <= number2) {
+        fact *= start;
+        start++;
+    }
+}

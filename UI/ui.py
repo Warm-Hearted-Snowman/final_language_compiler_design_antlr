@@ -1,8 +1,9 @@
 import sys
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QColor
-from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QPlainTextEdit, QPushButton, QWidget, QScrollArea, QSizePolicy
-from interpreter import run_code
+from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QPlainTextEdit, QPushButton, QWidget, QScrollArea, \
+    QHBoxLayout
+from backend.interpreter import run_code
+
 
 class FinalLanguageTextEditor(QMainWindow):
     def __init__(self):
@@ -10,8 +11,8 @@ class FinalLanguageTextEditor(QMainWindow):
 
         self.main_layout = None
         self.variables = {}
-        self.input_block_counter = 1
-        self.result_block_counter = 1
+        self.input_block_counter = 0
+        self.result_block_counter = 0
         self.initUI()
 
     def initUI(self):
@@ -35,21 +36,27 @@ class FinalLanguageTextEditor(QMainWindow):
         scroll_area.setWidgetResizable(True)
         scroll_area.setWidget(self.blocks_container)
 
-        # Create the input text editor widget
         self.input_editor = QPlainTextEdit(self)
+        self.input_editor.setStyleSheet("color: green;")
         self.blocks_layout.addWidget(self.input_editor)
         self.input_editor.setFocus()
 
         # Create the Send Data button
-        send_button = QPushButton('Send Data', self)
+        send_button = QPushButton('Run', self)
         send_button.clicked.connect(self.sendData)
         send_button.setFixedWidth(100)
 
+        close_button = QPushButton('Close', self)
+        close_button.clicked.connect(self.closeWindow)
+        close_button.setFixedWidth(100)
+
         # Create a container widget for the Send Data button
         button_widget = QWidget(self)
-        button_layout = QVBoxLayout(button_widget)
+        button_layout = QHBoxLayout(button_widget)
         button_layout.addWidget(send_button)
-        button_layout.setAlignment(Qt.AlignTop | Qt.AlignRight)
+        button_layout.addWidget(close_button)
+        button_layout.setAlignment(Qt.AlignRight)
+        # button_layout.setAlignment(Qt.AlignTop | Qt.AlignRight)
 
         # Add the button container widget to the main layout
         self.main_layout.addWidget(button_widget)
@@ -78,7 +85,7 @@ class FinalLanguageTextEditor(QMainWindow):
         if isinstance(processed_data, list):
             result = "".join(processed_data)
         else:
-            result = "Error: "+str(processed_data)
+            result = "Error: " + str(processed_data)
         # Create a new result editor for the processed data
         self.createResultEditor(result)
 
@@ -92,7 +99,7 @@ class FinalLanguageTextEditor(QMainWindow):
         self.result_block_counter += 1
 
         self.result_editor = QPlainTextEdit(self)
-        self.result_editor.setPlainText(result_block_number)
+        self.result_editor.setPlainText(f"[{result_block_number}] {text}")
         self.result_editor.setReadOnly(True)
         self.result_editor.setStyleSheet("color: red; font-weight: bold;")
         self.blocks_layout.addWidget(self.result_editor)
@@ -100,12 +107,13 @@ class FinalLanguageTextEditor(QMainWindow):
         # Create a new input block
         input_block_number = str(self.input_block_counter)
         self.input_block_counter += 1
-
         self.input_editor = QPlainTextEdit(self)
-        self.input_editor.setStyleSheet("color: green; font-weight: bold;")
-        self.input_editor.setPlainText(input_block_number)
+        self.input_editor.setPlainText(f"[{input_block_number}] ")
+        self.input_editor.setStyleSheet("color: green;")
         self.blocks_layout.addWidget(self.input_editor)
 
+    def closeWindow(self):
+        self.close()
 
     def processData(self, text):
         try:
@@ -116,8 +124,10 @@ class FinalLanguageTextEditor(QMainWindow):
             return e
 
 
-if __name__ == '__main__':
+def main():
     app = QApplication(sys.argv)
     window = FinalLanguageTextEditor()
     window.show()
     sys.exit(app.exec_())
+
+main()
