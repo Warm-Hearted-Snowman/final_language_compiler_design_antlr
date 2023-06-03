@@ -7,9 +7,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE_DIR)
 
 
-class MainWindow(QMainWindow):
+class SampleCodeWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.sample_source_code = None
+        self.main_window = None
         self.initUI()
 
     def initUI(self):
@@ -19,24 +21,23 @@ class MainWindow(QMainWindow):
         # Create the text area widget
         self.text_edit = QTextBrowser(self)
 
-
         # Create a vertical layout for the buttons
         button_layout = QVBoxLayout()
         for i in range(1, 11):
             btn = QPushButton(f"Source Code {i}")
             btn.clicked.connect(lambda _, x=i: self.show_source_code(x))
+            btn.setFixedSize(300, 60)
             button_layout.addWidget(btn)
 
         button_layout.addStretch()
-        button_layout.setContentsMargins(20, 200, 20, 20)  # Set the padding for the buttons
+        button_layout.setContentsMargins(20, 100, 20, 20)  # Set the padding for the buttons
 
         self.run_button = QPushButton("Run")
         self.run_button.clicked.connect(self.run_code)
         button_layout.addWidget(self.run_button)
-        exit_button = QPushButton("Exit")
-        exit_button.clicked.connect(self.close)
+        exit_button = QPushButton("Back")
+        exit_button.clicked.connect(self.back_button)
         button_layout.addWidget(exit_button)
-
 
         # Create a horizontal layout to hold the text area and buttons
         main_layout = QHBoxLayout()
@@ -45,7 +46,7 @@ class MainWindow(QMainWindow):
         main_layout.setContentsMargins(0, 0, 0, 0)
 
         # Set the size ratio of the text area and buttons
-        main_layout.setStretch(0, 6)
+        main_layout.setStretch(0, 5)
         main_layout.setStretch(1, 1)
 
         # Create a central widget to hold the main layout
@@ -54,14 +55,21 @@ class MainWindow(QMainWindow):
 
         self.setCentralWidget(central_widget)
 
-
     def show_source_code(self, code_num):
-        source_code = f"Source Code {code_num} content goes here."
-        self.text_edit.setPlainText(source_code)
+        with open(f'{BASE_DIR}/sample_codes/sample_code_{code_num}.txt', 'r') as f:
+            self.sample_source_code = f.read()
+        self.text_edit.setPlainText(self.sample_source_code)
 
     def run_code(self):
         result_window = ResultWindow(self.text_edit.toPlainText())
         result_window.show()
+
+    def back_button(self):
+        from UI.mainWindow import CompilerWindow
+        if self.main_window is None:
+            self.main_window = CompilerWindow()
+        self.close()
+        self.main_window.showMaximized()
 
 
 class ResultWindow(QWidget):
@@ -92,6 +100,6 @@ class ResultWindow(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = MainWindow()
+    window = SampleCodeWindow()
     window.showMaximized()
     sys.exit(app.exec_())

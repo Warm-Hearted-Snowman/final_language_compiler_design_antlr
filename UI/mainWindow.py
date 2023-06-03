@@ -3,20 +3,22 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QTextBrowser, QPushButton
 from PyQt5.QtCore import QFile
 import os
 from ui import FinalLanguageTextEditor
+from UI.sample_codes import SampleCodeWindow
 # Import necessary modules
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE_DIR)
+
 
 class CompilerWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
+        self.sample_code_window = None
         self.init_ui()
         self.final_language_window = None
 
     def init_ui(self):
         self.setWindowTitle("Compiler Design Project")
-
         # Create the text area widget
         self.text_area = QTextBrowser(self)
         self.load_markdown_file(f'{BASE_DIR}/README/report.md')
@@ -24,24 +26,24 @@ class CompilerWindow(QMainWindow):
         # Create the buttons
         button1 = QPushButton("Interpreter")
         button1.clicked.connect(self.interpreter_clicked)
-        button1.setFixedSize(200, 70)
+        button1.setFixedSize(300, 70)
 
         button2 = QPushButton("Use sample codes")
-        button2.clicked.connect(self.button2_clicked)
-        button2.setFixedSize(200, 70)
+        button2.clicked.connect(self.sample_codes_btn)
+        button2.setFixedSize(300, 70)
 
         button3 = QPushButton("Code as Yourself")
-        button3.clicked.connect(self.button3_clicked)
-        button3.setFixedSize(200, 70)
+        button3.clicked.connect(self.custom_code_btn)
+        button3.setFixedSize(300, 70)
 
         # Create the credit and exit buttons
         credit_button = QPushButton("Credits")
         credit_button.clicked.connect(self.show_credits)
-        credit_button.setFixedSize(200, 70)
+        credit_button.setFixedSize(300, 70)
 
         exit_button = QPushButton("Exit")
         exit_button.clicked.connect(self.close)
-        exit_button.setFixedSize(200, 70)
+        exit_button.setFixedSize(300, 70)
 
         # Create a vertical layout for the buttons
         button_layout = QVBoxLayout()
@@ -51,7 +53,7 @@ class CompilerWindow(QMainWindow):
         button_layout.addWidget(credit_button)
         button_layout.addWidget(exit_button)
         button_layout.addStretch()
-        button_layout.setContentsMargins(20, 200, 20, 20)  # Set the padding for the buttons
+        button_layout.setContentsMargins(20, 300, 20, 20)  # Set the padding for the buttons
 
         # Create a horizontal layout to hold the text area and buttons
         main_layout = QHBoxLayout()
@@ -60,7 +62,7 @@ class CompilerWindow(QMainWindow):
         main_layout.setContentsMargins(0, 0, 0, 0)
 
         # Set the size ratio of the text area and buttons
-        main_layout.setStretch(0, 2)
+        main_layout.setStretch(0, 5)
         main_layout.setStretch(1, 1)
 
         # Create a central widget to hold the main layout
@@ -82,10 +84,13 @@ class CompilerWindow(QMainWindow):
 
         self.final_language_window.show()
 
-    def button2_clicked(self):
-        self.text_area.append("Button 2 clicked")
+    def sample_codes_btn(self):
+        if self.sample_code_window is None:
+            self.sample_code_window = SampleCodeWindow()
+        self.close()
+        self.sample_code_window.showMaximized()
 
-    def button3_clicked(self):
+    def custom_code_btn(self):
         self.text_area.append("Button 3 clicked")
 
     def show_credits(self):

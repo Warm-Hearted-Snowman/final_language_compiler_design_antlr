@@ -1,8 +1,11 @@
 # Generated from final.g4 by ANTLR 4.9.2
 from antlr4 import *
-
-import finalFunctions
-from finalParser import finalParser
+import os
+import sys
+# Import necessary modules
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(BASE_DIR)
+from backend.finalParser import finalParser
 
 
 # This class defines a complete generic visitor for a parse tree produced by finalParser.

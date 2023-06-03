@@ -129,5 +129,3 @@ def main():
     window = FinalLanguageTextEditor()
     window.show()
     sys.exit(app.exec_())
-
-main()
