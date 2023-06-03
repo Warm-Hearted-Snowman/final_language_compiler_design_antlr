@@ -1,6 +1,6 @@
 int main() {
     write(100- 4);
-    int a=9,i;
+    int a=9,i=1;
     int b = a*8;
     if (a<b) so {
     write(a);
@@ -9,7 +9,6 @@ int main() {
     write('this is B: ', b);
     }
     write('enter i value:');
-    read(int, i);
     selector: i{
         select 0:
             write(0);

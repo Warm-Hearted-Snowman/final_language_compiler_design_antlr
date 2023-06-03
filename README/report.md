@@ -6,11 +6,11 @@ This report provides an analysis of the LL(1) parser and scanner for a given sam
 **Sample Code:**
 ```java
 int main(){
-    int number1 = -10, number2 = 20;
+    int number1 = -10, number2=20, start = 1, fact = 1;
     loop (number1 & number1 <= number2 & number1++){
         write('This is number1 = int', number1);
     }
-    if (number1 < 0) so {
+    if (number1<0) so {
         number1 = -number1;
     }
     until(start <= number2) {

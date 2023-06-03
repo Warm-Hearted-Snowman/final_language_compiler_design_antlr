@@ -4,12 +4,11 @@ from backend.finalParser import finalParser
 from backend.finalVisitor_interpreter_edition import finalVisitor
 
 
-# TODO code in like a IDLE in python to run block by block or line by line
 def run_code(code, variables=None):
     if variables is None:
         variables = {}
     code = "int main(){ %s }" % code
-    print(code)
+
     input_stream = InputStream(code)
     # input_stream = InputStream("int fact *= start;")
 

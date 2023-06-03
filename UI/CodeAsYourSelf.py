@@ -9,7 +9,7 @@ sys.path.append(BASE_DIR)
 from backend.code_execute import code_execute
 
 
-class SampleCodeWindow(QMainWindow):
+class CodeAsYourSelf(QMainWindow):
     def __init__(self):
         super().__init__()
         self.result_window = None
@@ -22,16 +22,11 @@ class SampleCodeWindow(QMainWindow):
         self.setWindowTitle("Compiler Design Project")
 
         # Create the text area widget
-        self.text_edit = QTextBrowser(self)
+        self.text_edit = QPlainTextEdit(self)
+        self.text_edit.setFixedSize(700,400)
 
         # Create a vertical layout for the buttons
         button_layout = QVBoxLayout()
-        for i in range(1, 11):
-            btn = QPushButton(f"Source Code {i}")
-            btn.clicked.connect(lambda _, x=i: self.show_source_code(x))
-            btn.setFixedSize(300, 60)
-            button_layout.addWidget(btn)
-
         button_layout.addStretch()
         button_layout.setContentsMargins(20, 100, 20, 20)  # Set the padding for the buttons
 
@@ -72,31 +67,13 @@ class SampleCodeWindow(QMainWindow):
 
         msg_box.exec_()
 
-    def show_source_code(self, code_num):
-        with open(f'{BASE_DIR}/sample_codes/sample_code_{code_num}.txt', 'r') as f:
-            self.sample_source_code = f.read()
-        self.text_edit.setPlainText(self.sample_source_code)
-
     def run_code(self):
-        if self.sample_source_code is not None:
-            self.result_window = ResultWindow(self.sample_source_code)
-            self.result_window.show()
-        else:
-            self.show_error(error="You don't choose any sample code",
-                            additional_information="First choose a sample code then click run to see the result.")
-
+        code = self.text_edit.toPlainText()
+        self.result_window = ResultWindow(code)
+        self.result_window.show()
     def back_button(self):
         from UI.mainWindow import CompilerWindow
         if self.main_window is None:
             self.main_window = CompilerWindow()
         self.close()
         self.main_window.showMaximized()
-
-
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = SampleCodeWindow()
-    window.showMaximized()
-    sys.exit(app.exec_())

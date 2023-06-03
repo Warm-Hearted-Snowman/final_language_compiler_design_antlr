@@ -1,5 +1,5 @@
 int main(){
-    int number1 = -10, number2=20;
+    int number1 = -10, number2=20, start = 1, fact = 1;
     loop (number1 & number1 <= number2 & number1++){
         write('This is number1 = int', number1);
     }

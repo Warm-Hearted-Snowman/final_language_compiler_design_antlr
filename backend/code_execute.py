@@ -1,6 +1,7 @@
 from antlr4 import *
 import os
 import sys
+
 # Import necessary modules
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE_DIR)
@@ -9,12 +10,7 @@ from backend.finalParser import finalParser
 from backend.finalVisitor import finalVisitor
 
 
-# TODO code in like a IDLE in python to run block by block or line by line
-def main():
-    # Create an input stream from the input source
-    with open(f'{BASE_DIR}/sample_codes/cef.txt', 'r') as f:
-        code = f.read()
-
+def code_execute(code):
     input_stream = InputStream(code)
     # input_stream = InputStream("int fact *= start;")
 
@@ -32,7 +28,3 @@ def main():
     f_visitor = finalVisitor()
 
     f_visitor.visit(f_context)
-
-
-if __name__ == '__main__':
-    main()

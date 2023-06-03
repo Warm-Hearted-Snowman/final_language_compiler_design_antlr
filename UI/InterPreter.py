@@ -63,7 +63,7 @@ class FinalLanguageTextEditor(QMainWindow):
 
         # Set the main window properties
         self.setGeometry(100, 100, 800, 600)
-        self.setWindowTitle('JupyterLab Text Editor')
+        self.setWindowTitle('Final Language Interpreter Text Editor')
 
         # Initialize the result editor
         self.result_editor = None
@@ -123,9 +123,3 @@ class FinalLanguageTextEditor(QMainWindow):
         except Exception as e:
             return e
 
-
-def main():
-    app = QApplication(sys.argv)
-    window = FinalLanguageTextEditor()
-    window.show()
-    sys.exit(app.exec_())

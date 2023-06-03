@@ -13,6 +13,7 @@ from backend.finalParser import finalParser
 class finalVisitor(ParseTreeVisitor):
 
     def __init__(self):
+        self.input_window = None
         self.variables = {}
         self.result = []
 
@@ -171,19 +172,35 @@ class finalVisitor(ParseTreeVisitor):
     def visitReadStatement(self, ctx: finalParser.ReadStatementContext):
         type_specifier = self.visit(ctx.typeSpecifier())
         variable_name = ctx.ID().getText()
+
         if self.variables.get(variable_name, -1) != -1:
+            from UI.user_input_window import user_input_window
+            from PyQt5.QtWidgets import QApplication
+
+            app = QApplication.instance()
+            if app is None:
+                app = QApplication([])
+
+            input_window = user_input_window(variable_name, type_specifier)
+            input_window.show()
+
+            while input_window.isVisible():
+                app.processEvents()
+
+            user_input = input_window.handle_input()
+
             if type_specifier == 'int' and self.variables[variable_name]['type'] == 'int':
-                new_value = int(input())
+                new_value = int(user_input)
                 self.variables[variable_name]['value'] = [new_value, 'int']
             elif type_specifier == 'int' and self.variables[variable_name]['type'] == 'float':
-                new_value = float(input())
+                new_value = float(user_input)
                 self.variables[variable_name]['value'] = [new_value, 'float']
             elif type_specifier == 'float' and self.variables[variable_name]['type'] == 'float':
-                new_value = float(input())
+                new_value = float(user_input)
                 self.variables[variable_name]['value'] = [new_value, 'float']
             else:
                 raise Exception(
-                    f"{variable_name} with {self.variables[variable_name]['type']} not fit with {type_specifier} ")
+                    f"{variable_name} with {self.variables[variable_name]['type']} does not match {type_specifier}")
         else:
             raise Exception(f'No variable with \'{variable_name}\' identified.')
 

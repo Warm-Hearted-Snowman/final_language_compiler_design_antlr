@@ -2,8 +2,10 @@ import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTextBrowser, QPushButton, QVBoxLayout, QHBoxLayout, QWidget
 from PyQt5.QtCore import QFile
 import os
-from ui import FinalLanguageTextEditor
+from InterPreter import FinalLanguageTextEditor
 from UI.sample_codes import SampleCodeWindow
+from UI.CodeAsYourSelf import CodeAsYourSelf
+from UI.CreditPage import CreditPage
 # Import necessary modules
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE_DIR)
@@ -13,6 +15,8 @@ class CompilerWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
+        self.credit_window = None
+        self.custom_code_window = None
         self.sample_code_window = None
         self.init_ui()
         self.final_language_window = None
@@ -91,17 +95,16 @@ class CompilerWindow(QMainWindow):
         self.sample_code_window.showMaximized()
 
     def custom_code_btn(self):
-        self.text_area.append("Button 3 clicked")
+        if self.custom_code_window is None:
+            self.custom_code_window = CodeAsYourSelf()
+        self.close()
+        self.custom_code_window.show()
 
     def show_credits(self):
-        self.text_area.append("Credits: John Doe")
+        if self.credit_window is None:
+            self.credit_window = CreditPage()
+        self.credit_window.show()
 
     def closeEvent(self, event):
         event.accept()
 
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = CompilerWindow()
-    window.showMaximized()
-    sys.exit(app.exec_())

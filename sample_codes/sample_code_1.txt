@@ -1,7 +1,6 @@
 int main(){
-    int number1 = 1, number2, temp, fact = 1, start = 1, input;
+    int number1 = -5, number2 = 10, temp, fact = 1, start = 1, input=0;
     write('Enter number2:', number2);
-    read(int, number2);
     write('This is number2=int', number2);
     if (number1>number2) so {
         temp = number1;
@@ -20,7 +19,6 @@ int main(){
     }
     write('this is fact of number2 = int', fact);
     write('Enter 0 or 1');
-    read(int, input);
     selector: input{
         select 0:
             write ('This is ZERO!');
