@@ -92,11 +92,3 @@ class SampleCodeWindow(QMainWindow):
         self.close()
         self.main_window.showMaximized()
 
-
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = SampleCodeWindow()
-    window.showMaximized()
-    sys.exit(app.exec_())

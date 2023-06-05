@@ -113,7 +113,7 @@ class finalVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by finalParser#loopStatement.
     def visitLoopStatement(self, ctx: finalParser.LoopStatementContext):
-        global flag
+        flag = False
         init_expression = None
         if ctx.expression(0):
             init_expression = self.visit(ctx.expression(0))

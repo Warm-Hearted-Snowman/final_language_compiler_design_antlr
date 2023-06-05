@@ -1,1 +1,27 @@
- 
+int main(){
+    int x = 10;
+    float y = 3.14;
+    if (x > y) so {
+        write("x is greater than y");
+    }
+    int i = 0;
+    loop (& i < 5& i++) {
+        write(i);
+    }
+    int test = 3;
+    selector: test{
+    select 1:
+        write("One");
+    select 2:
+        write("Two");
+    select 3:
+        write("Three");
+    other:
+        write("Other");
+    }
+    int num1, num2;
+    read(int, num1);
+    read(int, num2);
+    int sum = num1 + num2;
+    write(sum);
+}

@@ -6,6 +6,7 @@ from InterPreter import FinalLanguageTextEditor
 from UI.sample_codes import SampleCodeWindow
 from UI.CodeAsYourSelf import CodeAsYourSelf
 from UI.CreditPage import CreditPage
+
 # Import necessary modules
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE_DIR)
@@ -25,7 +26,7 @@ class CompilerWindow(QMainWindow):
         self.setWindowTitle("Compiler Design Project")
         # Create the text area widget
         self.text_area = QTextBrowser(self)
-        self.load_markdown_file(f'{BASE_DIR}/README/report.md')
+        self.load_markdown_file(f'{BASE_DIR}/README/Compiler_design_report.md')
 
         # Create the buttons
         button1 = QPushButton("Interpreter")
@@ -108,3 +109,9 @@ class CompilerWindow(QMainWindow):
     def closeEvent(self, event):
         event.accept()
 
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = CompilerWindow()
+    window.showMaximized()
+    sys.exit(app.exec_())
