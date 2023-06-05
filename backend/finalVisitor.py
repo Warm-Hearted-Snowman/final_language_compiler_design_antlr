@@ -111,21 +111,33 @@ class finalVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by finalParser#loopStatement.
     def visitLoopStatement(self, ctx: finalParser.LoopStatementContext):
-        global flag
+
         init_expression = None
-        if ctx.expression(0):
-            init_expression = self.visit(ctx.expression(0))
-        condition = None
-        if ctx.expression(1):
-            condition = self.visit(ctx.expression(1))
-        update_expression = None
-        if ctx.expression(2):
+        if ctx.expression(2) is not None:
             flag = True
-        compound_statement = None
-        while flag and condition:
-            compound_statement = self.visit(ctx.compoundStatement())
-            update_expression = self.visit(ctx.expression(2))
-            condition = self.visit(ctx.expression(1))
+            if ctx.expression(0):
+                init_expression = self.visit(ctx.expression(0))
+            condition = None
+            if ctx.expression(1) is not None:
+                condition = self.visit(ctx.expression(1))
+            update_expression = None
+            compound_statement = None
+            print(flag, condition, ctx.expression(2))
+            while flag and condition:
+                compound_statement = self.visit(ctx.compoundStatement())
+                update_expression = self.visit(ctx.expression(2))
+                condition = self.visit(ctx.expression(1))
+        else:
+            flag = True
+            condition = None
+            if ctx.expression(0) is not None:
+                condition = self.visit(ctx.expression(0))
+            update_expression = None
+            compound_statement = None
+            while flag and condition:
+                compound_statement = self.visit(ctx.compoundStatement())
+                update_expression = self.visit(ctx.expression(1))
+                condition = self.visit(ctx.expression(0))
         return ("loop", init_expression, condition, update_expression, compound_statement)
 
     # Visit a parse tree produced by finalParser#selectorStatement.

@@ -6,7 +6,6 @@ from UI.ResultWindow import ResultWindow
 # Import necessary modules
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE_DIR)
-from backend.code_execute import code_execute
 
 
 class CodeAsYourSelf(QMainWindow):

@@ -1,1 +1,7 @@
- 
+int main(){
+    int a=25;
+    until(a>0){
+        write(a);
+        a -=2;
+    }
+}
