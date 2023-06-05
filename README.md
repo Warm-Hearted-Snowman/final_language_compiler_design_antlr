@@ -36,9 +36,13 @@ To run the compiler, follow these steps:
    ```
    pip install -r requirements.txt
    ```
-3. Run the `main.py` script using Python:
+3. Run the `mainwindow.py` script using Python (GUI):
    ```
    python UI/mainWindow.py
+   ```
+- If you want to use your sample codes, put your file in `user_code` directory and then run `rawcompile.py`
+- ```
+   python UI/rawcompile.py
    ```
 4. The Compiler Design Project window will open.
 5. Choose one of the available options:

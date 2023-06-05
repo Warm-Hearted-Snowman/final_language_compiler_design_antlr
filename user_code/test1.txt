@@ -1,0 +1,6 @@
+int main(){
+    int a=25;
+    loop(& a < 100 & a *= 2 ){
+        write(a);
+    }
+}
